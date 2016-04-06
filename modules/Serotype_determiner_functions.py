@@ -1,9 +1,8 @@
 """
 
-.. module:: new_serotype_finder_functions.py
-  :platform: Unix, Windows
+.. module:: Serotype_determiner_functions.py
 
-.. moduleauthor:: Ali Al-Shahib
+.. moduleauthor:: Ali Al-Shahib, Georgia Kapatai
 
 """
 import os, os.path, sys, subprocess, inspect
