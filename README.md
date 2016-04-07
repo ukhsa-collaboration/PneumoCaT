@@ -111,8 +111,8 @@ With Optional arguments:
 
 Eight different formats of failure values are returned depending on the coverage statistic values and individual mutations:
 
-* "Reference data not available ['24B', '24F']": Serogroups 24 and 32 have no available reference data. In this case, conventional serotyping needs to follow.
-* "Mixed ['01', '22A', '22F']": The combination of serotypes matched with more than 90% coverage during step 1 does not correspond to any known serogroup or genogroup. Mixed culture is suspected and the sample needs to be investigated further in the lab.
+* "Reference data not available ['24B', '24F']": Serogroups 24 and 32 have no available reference data.
+* "Mixed ['01', '22A', '22F']": The combination of serotypes matched with more than 90% coverage during step 1 does not correspond to any known serogroup or genogroup. In this case mixed culture is suspected.
 * “Low coverage”: Less than 90% coverage of the gene sequence.
 * "SNP position 1002: Depth < 5”: Nucleotide position covered by less than 5 reads.
 * “SNP position 1002 not covered”: No reads map at this nucleotide position.
