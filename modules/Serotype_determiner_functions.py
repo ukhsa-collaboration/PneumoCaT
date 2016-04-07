@@ -240,10 +240,12 @@ def best_coverage(bam,fasta):
       second_selected_id = id
   
   ## export hits into a yaml file to investigate failed samples
-  out_yml = open(os.path.join(os.path.dirname(bam), 'coverage_summary.yml'), 'wb')
-  sorted_coverage = sorted(coverage.items(), key=operator.itemgetter(1))
-  out_yml.write(yaml.dump(sorted_coverage, default_flow_style=True))
-  out_yml.close()
+  out_fp = open(os.path.join(os.path.dirname(bam), 'coverage_summary.txt'), 'w')
+  out_fp.write('Serotype\tCoverage\n')
+  sorted_coverage = sorted(coverage.items(), key=operator.itemgetter(1), reverse=True)
+  for serotype, coverage in sorted_coverage:
+    out_fp.write(serotype+'\t'+str(coverage)+'\n')
+  out_fp.close()
 
   ## select hits > 90%
   hits = [f for f in coverage.keys() if coverage[f]>90] ## addition for step2
