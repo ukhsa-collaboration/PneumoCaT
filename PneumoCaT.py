@@ -1,5 +1,23 @@
 #!/usr/bin/env python
 
+'''
+    <PneumoCaT: a tool for assigning capsular type to Streptococcus pneumoniae genomic sequence data.>
+    Copyright (C) 2016 PHE
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 import os, os.path, sys, subprocess, argparse, glob, yaml, inspect
 
 module_folder_paths = ["modules"]
@@ -92,14 +110,14 @@ def main(opts):
 
   reference_fasta_file = os.path.join(opts.variant_database, 'reference.fasta')
   if opts.variant_database != 'streptococcus-pneumoniae-ctvdb':
-    check_file_exists(reference_fasta_file)
+    check_file_exists(reference_fasta_file, 'reference.fasta file')
     
   workflow = 'PneumoCaT'
   version = '1.0'
   # create a log folder in the specified input directory
   # This is set once to log all subprocesses.  The stdout and stderr log files will be in the output_dir.  The logger is called in Serotype_determiner_functions.
-  if not os.path.exists(opts.input_directory + "/logs"): os.makedirs(opts.input_directory + "/logs") 
-  logger = log_writer.setup_logger(info_file = opts.input_directory + "/logs/pneumo_capsular_typing.stdout", error_file = opts.input_directory + "/logs/pneumo_capsular_typing.stderr")
+  if not os.path.exists(opts.output_dir + "/logs"): os.makedirs(opts.output_dir + "/logs") 
+  logger = log_writer.setup_logger(info_file = opts.output_dir + "/logs/pneumo_capsular_typing.stdout", error_file = opts.output_dir + "/logs/pneumo_capsular_typing.stderr")
 
   #Step1: coverage based approach
   hits = Serotype_determiner_functions.find_serotype(opts.input_directory, fastq_files, reference_fasta_file, opts.output_dir, opts.bowtie, opts.samtools, id, logger, workflow=workflow, version=version) ## addition for step2
@@ -110,7 +128,7 @@ def main(opts):
   elif len(hits) == 1 and hits[0] in ['11A', '11B', '11C', '11D', '11F']: hits = ['11A', '11B', '11C', '11D', '11F'] # same for the serogroup 11 isolates
   if len(hits) > 1 or hits==['06E']:
     reference_directory = opts.variant_database
-    logger = log_writer.setup_logger(info_file = opts.input_directory + "/logs/SNP_based_serotyping.stdout", error_file = opts.input_directory + "/logs/SNP_based_serotyping.stderr")
+    logger = log_writer.setup_logger(info_file = opts.output_dir + "/logs/SNP_based_serotyping.stdout", error_file = opts.output_dir + "/logs/SNP_based_serotyping.stderr")
     SNP_based_Serotyping_Functions.find_serotype(opts.input_directory, hits, reference_directory, opts.output_dir, opts.bowtie, opts.samtools, logger, workflow=workflow, version=version)
   write_component_complete(opts.output_dir)
 

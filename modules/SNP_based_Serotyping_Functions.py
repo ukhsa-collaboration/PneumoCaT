@@ -1040,11 +1040,11 @@ def find_serotype(fastq_path, serotypes, reference_directory, output_dir, bowtie
             sys.exit(1)
 
     # read the reference files (reference fasta and mutationdb.pickle)associated with given serotypes
-    unique, reference_fasta_file = try_and_except(input_dir+"/logs/SNP_based_serotyping.stderr", parse_serotype_specific_info, serotypes, reference_directory, outdir, fastq, logger, workflow, version)
+    unique, reference_fasta_file = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", parse_serotype_specific_info, serotypes, reference_directory, outdir, fastq, logger, workflow, version)
     if unique != None:
         sorted_bamfile, reference_fasta_file = try_and_except(input_dir+"/logs/SNP_based_serotyping.stderr", bowtie_map.mapping, fastq, reference_fasta_file, bowtie_path, samtools_path, outdir, logger)
-        match, sample = try_and_except(input_dir+"/logs/SNP_based_serotyping.stderr", pileup_investigation, unique, sorted_bamfile, reference_fasta_file, serotypes, samtools_path, logger)
-        try_and_except(input_dir+"/logs/SNP_based_serotyping.stderr", output_xml, match, outdir, sample, unique, logger, workflow, version)
+        match, sample = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", pileup_investigation, unique, sorted_bamfile, reference_fasta_file, serotypes, samtools_path, logger)
+        try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", output_xml, match, outdir, sample, unique, logger, workflow, version)
     # clean up all unnecessary files
     tmp = glob.glob(os.path.join(outdir, '*tmp*'))
     if tmp:

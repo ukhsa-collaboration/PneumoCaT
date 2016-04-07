@@ -51,11 +51,11 @@ def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bow
   :rtype: float
 
   """
-  bam = try_and_except(input_directory + "/logs/strep_pneumo_serotyping.stderr", mapping, input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, id, logger)
+  bam = try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", mapping, input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, id, logger)
   output_file = open(output_dir + "/" + id + ".results.xml", "w")
-  try_and_except(input_directory + "/logs/strep_pneumo_serotyping.stderr", best_coverage,bam,reference_fasta_file)
+  try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", best_coverage,bam,reference_fasta_file)
   hits = try_and_except(input_directory + "/logs/strep_pneumo_serotyping.stderr", output_all,bam,reference_fasta_file,output_file,id,workflow,version) # added for step 2
-  try_and_except(input_directory + "/logs/strep_pneumo_serotyping.stderr", cleanup,output_dir)
+  try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", cleanup,output_dir)
   return hits
 
 def mapping(input_directory, fastqs, reference_fasta_file_path, output_dir, bowtie, samtools, id, logger):
@@ -243,8 +243,8 @@ def best_coverage(bam,fasta):
   out_fp = open(os.path.join(os.path.dirname(bam), 'coverage_summary.txt'), 'w')
   out_fp.write('Serotype\tCoverage\n')
   sorted_coverage = sorted(coverage.items(), key=operator.itemgetter(1), reverse=True)
-  for serotype, coverage in sorted_coverage:
-    out_fp.write(serotype+'\t'+str(coverage)+'\n')
+  for ser, cov in sorted_coverage:
+    out_fp.write(ser+'\t'+str(cov)+'\n')
   out_fp.close()
 
   ## select hits > 90%
