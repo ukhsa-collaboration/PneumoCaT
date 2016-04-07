@@ -10,6 +10,7 @@ This tool uses a two-step step approach to assign capsular type to *S.pneumoniae
 * Running PneumoCaT
 * PneumoCaT Output
 * Examples
+* Troubleshooting
 
 ## Dependencies
 ---------------------------
@@ -28,6 +29,8 @@ PneumoCaT  is written with Python 2.7.5 and requires the following packages inst
 
 ```
 usage: python PneumoCaT.py [-h]
+                           [--input_directory INPUT_DIRECTORY]
+                           [--fastq_1 FASTQ_1] [--fastq_2 FASTQ_2]
 
 Arguments:
   -h, --help            
@@ -47,3 +50,26 @@ Arguments:
   --samtools SAMTOOLS, -sam SAMTOOLS
         please provide the path for samtools [OPTIONAL]; defaults to samtools
 ```
+
+## Output files
+---------------
+
+### STEP 1: COVERAGE-BASED APPROACH
+1. **SAMPLEID.results.xml** - The XML file at step 1 is basic and it only contains the top two capsular types and their respective read coverage (% of the capsular locus length covered). If only one capsular type is matched with more than 90% coverage then the report from step 1 is considered the final result. If more than one capsular type are matched with more than 90% coverage then the software moves to step two and a second XML file is generated with the final result. Note that the output XML file from step 1 only reports two capsular types, when more could be matched and all will pass to step 2 for further distinction. If the top coverage is < 90% then no serotypes are reported and 'Failed' appears instead.
+2. **SAMPLEID.sorted.bam** - BAM file generated during step 1 using the 94 capsular locus sequences as reference.
+3. **SAMPLEID.sorted.bam.bai** - index file for the sorted BAM file
+4. **ComponentComplete.txt** - indicates PneumoCaT analysis was completed succssfully
+5. **coverage_summary.txt** - contains the coverage values for all serotypes. This is useful if the step has failed, epsecially if the top coverage falls close to the 90% threshold.
+
+### STEP 2 - VARIANT-BASED APPROACH
+1. **SAMPLEID.results.xml** - The XML file at step 2 details the assigned capsular type, total hits, the capsular types studied in this analysis as well as a full breakdown of the mutations used for this assignment. Total hits corresponds to the number of matched mutations vs the number of all mutations tested. A capsular type is assigned only if all mutations matched. If a complete match is not possible then 'Serotype Undetermined' is reported.
+    Coverage statistic metrics are calculated for each gene locus used for this assignment. These include five values as detailed below:
+  * Minimum depth: the minimum number of reads that maps to the gene sequence at any single position.
+  * Maximum depth: the maximum number of reads that maps to the gene sequence at any single position.
+  * Average depth: the average number of reads that maps across the length of the gene sequence.
+  * Percent Coverage: records coverage across the length of each gene sequence.
+  * Coverage Distribution: records the area of the gene sequence covered by reads.
+2. **SAMPLEID.sorted.bam** - BAM file generated during step 2 using specific genes, assigned for each serogroup/genogroup in the CTV database, as reference 
+3. **SAMPLEID.sorted.bam.bai** - index file for the sorted BAM file
+4. **variant_summary.yml** - contains the variant matches for all serotypes tested. This is useful if a complete match was not possible and 'Serotype undetermined' was reported. It can give information on coverage for specific positions, mixed positions and other events that could lead to failure to assing a serotype.
+
