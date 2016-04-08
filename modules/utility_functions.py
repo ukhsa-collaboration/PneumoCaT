@@ -5,9 +5,13 @@ More description.
 
 import logging
 import os
-import sys
+import sys, inspect
 
-from uk.gov.phe import phe_exceptions
+module_folder = os.path.dirname(os.path.abspath(__file__))
+if module_folder not in sys.path:
+    sys.path.insert(1, module_folder)
+
+import phe_exceptions
 
 # -----------------------------------------------------------------------------
 
