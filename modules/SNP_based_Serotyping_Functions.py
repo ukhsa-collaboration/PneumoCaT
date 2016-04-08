@@ -1006,7 +1006,7 @@ def find_serotype(fastq_path, serotypes, reference_directory, output_dir, bowtie
     This is the main function that calls other functions to determine serotype.
 
     Arguments:
-    fastq_path: path fastq file; either input directory containing two fastq files or the filepath to the processed .R1.fastq.gz (or R1.fastq) 
+    fastq_path: path fastq file; either input directory containing two fastq files or the filepath to the 1.fastq.gz (or 1.fastq) 
     serotypes: list of closely related serotypes in this format [07A, 07F, 40] i.e. all serotypes with numbers and letters need to follow this format \d{2}[A-Z]{1}
     output_dir: path to output directory 
     bowtie: path to bowtie
@@ -1017,19 +1017,19 @@ def find_serotype(fastq_path, serotypes, reference_directory, output_dir, bowtie
     if not os.path.exists(outdir): os.makedirs(outdir)
 
     # extract path to fastq file; two possibilities either already provided or input directory provided
-    glob_pattern = "*.processed.*fastq*"
+    glob_pattern = "*fastq*"
     if os.path.isdir(fastq_path): # if input directory provided
         input_dir = fastq_path
         fastq_files = glob.glob(os.path.join(fastq_path, glob_pattern))
         if len(fastq_files) != 2 and fastq_files != []:
-            print "Unexpected number (" + str(len(fastq_files)) + ") of processed fastq files"
+            print "Unexpected number (" + str(len(fastq_files)) + ") of fastq files"
             sys.exit(1)
         if fastq_files == []:
             fastq_files = glob.glob(os.path.join(fastq_path, '*.fastq*'))
             if fastq_files == []:
                 print "No fastq files in the directory provided:", fastq_path
                 sys.exit(1)
-        fastq = [f for f in fastq_files if f.find('.R1.') != -1 or f.find('_1.processed') != -1][0]
+        fastq = [f for f in fastq_files if f.find('1.fastq') != -1][0]
     else:
         input_dir = os.path.dirname(fastq_path)
         if input_dir == '': input_dir = os.getcwd()
