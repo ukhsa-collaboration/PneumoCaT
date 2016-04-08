@@ -53,6 +53,10 @@ Arguments:
   --samtools SAMTOOLS, -s SAMTOOLS
         please provide the path for samtools [OPTIONAL]; defaults to samtools
 ```
+## Input files
+--------------
+
+Input files are required to have this pattern present \*1.fastq\* or \*2.fastq\*. The tool doesn't currently recognizes \*fq\*. SAMPLEID is extracted from the 1.fastq file by splitting the fastq file name on '.' and selecting the first part, i.e. SAMPLEID from SAMPLEID.1.fastq.gz or SAMPLEID_1 from SAMPLEID_1.fastq.gz.
 
 ## Output files
 ---------------
