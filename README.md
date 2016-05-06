@@ -89,8 +89,8 @@ Capsular Type Variant (CTV) database is supplied as a structured directory (stre
   * mutationdb.yml - contains the same information as the mutationdb.pickled file but can be read using text editors.
   * reference.fasta - contains the sequences for the genes defined in the mutationdb file.
 
-## Examples
------------
+## Run Examples
+---------------
 
 ### OPTION 1: Use input directory that contains fastq files for the isolate
 
@@ -110,6 +110,12 @@ Default for all optional arguments:
 With Optional arguments:
 
 `python PneumoCaT -1 <path-to-FASTQ1> -2 <path-to-FASTQ2> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowties> -s <path-to-samtools>`
+
+## Result Examples
+------------------
+
+As mentioned above, serotype can be called either in STEP 1 when a highly distinctive capsular locus sequence is present or STEP 2 when two or more serotypes have a similar capsular locus sequence and the variants from CTV database are used for distinction. 
+In testSet folder, an example for each of the scenarios is given; PHESPV0253 isolate is serotype 7B by both WGS and slide agglutination and it's an example of PneumoCaT STEP 2 analysis, whereas PHESPV0301 is serotype 14 and is an example of PneumoCaT STEP 1 analysis.
 
 ## Troubleshooting
 ------------------
