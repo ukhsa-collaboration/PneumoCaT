@@ -76,7 +76,6 @@ def clean_up(tmp, logger):
 
 
 def mapping(fastq_file, reference, bowtie_path, samtools_path, outdir, logger):
-    prefix =  re.sub('.R\d{1}.processed.fastq.?gz?|.processed.R\d{1}.fastq.?gz?', '', os.path.basename(fastq_file))
     sample = os.path.basename(fastq_file).split('.')[0]
     # create index if not available
     tmp = outdir + "/{0}_tmp/".format(sample)
@@ -85,12 +84,12 @@ def mapping(fastq_file, reference, bowtie_path, samtools_path, outdir, logger):
 
     fastq1 = fastq_file
     #if _args.source == 0:
-    fastq2 = fastq_file.replace('.R1', '.R2') if fastq_file.find('.R1') != -1 else fastq_file.replace('_1.processed', '_2.processed')
+    fastq2 = fastq_file.replace('1.fastq', '2.fastq')
     #else:
         #fastq2 = fastq_file.replace('_1.fq', '_2.fq')
-    samfile =  tmp + prefix + '.sam'
-    bamfile = tmp + prefix + '.bam'
-    sorted_bam_prefix = outdir + '/' + prefix + '.sorted'
+    samfile =  tmp + sample + '.sam'
+    bamfile = tmp + sample + '.bam'
+    sorted_bam_prefix = outdir + '/' + sample + '.sorted'
     if not os.path.isfile(sorted_bam_prefix+'.bam'): # change this to bamfiles/prefix.sorted.bam
         # create sam file
         log_writer.info_header(logger, "Running bowtie to generate sam file")
