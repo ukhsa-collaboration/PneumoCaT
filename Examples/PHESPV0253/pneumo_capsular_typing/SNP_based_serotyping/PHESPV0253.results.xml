@@ -1,0 +1,24 @@
+<ngs_sample id="PHESPV0253">
+  <workflow value="PneumoCaT" version="1.0"/>
+  <results>
+    <!--(START) Serotype Distinction Results (START)-->
+    <result type="Serotype_Distinction" value="07B"/>
+    <result type="Serotype_Distinction_Total_Hits" value="9/9"/>
+    <result type="Serotype_Distinction_Serotypes_Tested" value="07B,07C,40"/>
+    <result type="Serotype_Distinction_Gene" value="wcwK">
+      <result_data type="Detected" value="Y"/>
+      <result_data type="Hits" value="9/9"/>
+      <result_data type="SNPs" value="928 AAT:N 309;385 TTT:F 128;706 CAT:H 235;487 ACT:T 162;937 GCA:A 312;46 GAT:D 15;880 CTT:L 293;145 CTT:L 48;946 GGT:G 315"/>
+      <result_data type="Allele" value=""/>
+      <result_data type="Pseudogene" value=""/>
+      <result_data type="pct_Coverage" value="99.9"/>
+      <result_data type="Depth(min:max:avg)" value="7:79:46.2"/>
+      <result_data type="meanQ" value="38.2"/>
+      <result_data type="Length" value="1008"/>
+      <result_data type="Coverage_distribution" value="2-1008"/>
+      <result_data type="Failure" value="None"/>
+    </result>
+    <!--(END) Serotype Distinction Results (END)-->
+  </results>
+</ngs_sample>
+
