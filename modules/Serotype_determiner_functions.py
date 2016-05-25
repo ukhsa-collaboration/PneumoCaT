@@ -30,7 +30,7 @@ import yaml, operator
 
 
 
-def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, id, logger, workflow = "", version = ""):
+def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, clean_bam, id, logger, workflow = "", version = ""):
   
   """
   
@@ -56,6 +56,9 @@ def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bow
   try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", best_coverage,bam,reference_fasta_file)
   hits = try_and_except(input_directory + "/logs/strep_pneumo_serotyping.stderr", output_all,bam,reference_fasta_file,output_file,id,workflow,version) # added for step 2
   try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", cleanup,output_dir)
+  if clean_bam == True:
+    bamfiles = glob.glob(bam+'*')
+    for file in bamfiles: os.remove(file)
   return hits
 
 def mapping(input_directory, fastqs, reference_fasta_file_path, output_dir, bowtie, samtools, id, logger):
@@ -222,7 +225,7 @@ def best_coverage(bam,fasta):
     # go through each id and perform pileup
     for pileupcolumn in bamfile.pileup(id):
     # Any coverage greater than zero
-      if pileupcolumn.n > 0:
+      if pileupcolumn.n > 4:
         # append all base coverages for the id in a list 
         bases_with_coverage_array.append(pileupcolumn.n)
     # find the overall percentage coverage for each id
@@ -305,7 +308,7 @@ def output_all(bam,fasta,output_file,ngs_sample_id,workflow="",version=""):
       phred_score = ord(qual_ascii) - 33 
       # append all quals in one whole list
       quals.append(phred_score)
-      if pileupcolumn.n > 0:
+      if pileupcolumn.n > 4:
         # append all base coverages for the id in a list 
         # This is done to find max and mean depth
         bases_with_coverage_array.append(pileupcolumn.n)
