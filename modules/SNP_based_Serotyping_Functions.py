@@ -80,17 +80,22 @@ def parse_serotype_specific_info(serotypes, reference_directory, output_dir, fas
             key = k[0]
             datadir = os.path.join(data_path, key)
         else:
-            print "No reference data available", str(serotypes)
-            special_output_xml(serotypes,output_dir, fastq, logger, workflow, version)
+            if len(_serotypes) == 1:
+                print 'Analysis completed'
+                clean_up(output_dir, logger)
+            else:   
+                print "No reference data available", str(serotypes)
+                special_output_xml(serotypes,output_dir, fastq, logger, workflow, version)
             #sys.exit(1)
             unique = None
             reference_fasta_file = None
-            return unique, reference_fasta_file
+            return unique, reference_fasta_file, _serotypes
     data_file = open(os.path.join(datadir,'mutationdb.pickled'), 'rb')
     unique = pickle.load(data_file)
     reference_fasta_file = os.path.join(datadir, 'reference.fasta')
+    serotypes = os.path.basename(datadir).split('_')
 
-    return unique, reference_fasta_file
+    return unique, reference_fasta_file, serotypes
 
 def special_output_xml(serotypes, output_dir, filepath, logger, workflow="", version=""):
     """
@@ -109,8 +114,10 @@ def special_output_xml(serotypes, output_dir, filepath, logger, workflow="", ver
     serotypes.sort()
     output_file = open(output_dir + "/" + ngs_sample_id + ".results.xml", "w")
 
-    if serotypes == ['24B','24F'] or serotypes == ['32A','32F']:
-        result = 'Reference data not available '+str(serotypes)
+    if serotypes in [['24B'], ['24F'], ['24B','24F'], ['24A','24B','24F']]:
+        result = 'Reference data not available: Serogroup 24'
+    elif serotypes == ['32A','32F']:
+        result = "Reference data not available: Serogroup 32"
     else:
         result = 'Mixed'+str(serotypes)
 
@@ -154,19 +161,40 @@ def output_xml(match, output_dir, ngs_sample_id, unique, logger, workflow="", ve
         if record[0] == top_hit:
             serotype, mcnt, tcnt, mutations = record
             if '06E' in serotype: serotype='06E'
-    if mcnt != tcnt and (serotypes != ['15B', '15C'] and serotype != '06E'): # reports a failure if the top hit scored < 1.
+    if mcnt != tcnt and (serotypes != ['15A','15B', '15C', '15F'] and serotype != '06E'): # reports a failure if the top hit scored < 1.
         if [f for f in mutations if f[3].startswith('Mixed:')]:
-            top_hit = 'Mixed: ' + str(serotypes)
+            if len([f for f in scores if f[1] == top_score]) > 1:
+                top_hit = 'Mixed: ' + str([f[0] for f in scores if f[1] == top_score])
+            else:
+                top_hit = top_hit + '+'
         else:
-            top_hit = 'Serotype undetermined'
+            if len(_serotypes) == 1 and top_hit == _serotypes[0]:
+                top_hit = _serotypes[0]+'+'
+            else:
+                top_hit = 'Serotype undetermined'
+                
         # even though no serotype can be determined failure at this stage will still report the mutations for the top hit.
-    elif mcnt != tcnt and serotypes == ['15B', '15C']:
+    elif mcnt != tcnt and serotypes == ['15A','15B', '15C', '15F']:
         if [f for f in mutations if f[0] =='wciZ' and f[3].startswith('Mixed:')]: # check if mixed for wciZ
             mcnt += 1
-            top_hit = '15B/C'  if mcnt == tcnt else 'Serotype undetermined'
+            if mcnt == tcnt:
+                top_hit = '15B/C'
+            else:
+                if [f for f in mutations if f[0] !='wciZ' and f[3].startswith('Mixed:')] and len([f for f in scores if f[1] == top_score]) > 1:
+                    top_hit = 'Mixed: ' + str(['15A','15B/C'])
+                else:
+                    top_hit = 'Serotype undetermined'
+        else:
+            if len(_serotypes) > 1 and [f for f in mutations if f[3].startswith('Mixed:')]:
+                top_hit = top_hit+'+' if len([f for f in scores if f[1] == top_score]) == 1 else 'Mixed: '+ str([f[0] for f in scores if f[1] == top_score])
+            else:
+                if len(_serotypes) == 1 and top_hit == _serotypes[0]:
+                    top_hit = _serotypes[0]+'+'
+                else:
+                    top_hit = 'Serotype undetermined'
     elif len([f[1] for f in scores if f[1] == 1])> 1: # reports mixed sample if more than one serotypes scored == 1
         mixed_serotypes = [f[0] for f in scores if f[1] == 1]
-        top_hit = 'Mixed: ' + str(mixed_serotypes) # if mixed samples are detected then the result file will only report that, with no further information
+        top_hit = 'Mixed: ' + str([f[0] for f in scores if f[1] == 1])
     #elif top_score<1 and len([f[1] for f in scores if f[1] == top_score]) > 1:
     #    mixed_serotypes = [f[0] for f in scores if f[1] == top_score]
     #    top_hit = 'Mixed: ' + str(mixed_serotypes) 
@@ -620,7 +648,7 @@ def detect_pseudogene(reads_all, matched_reads, pseudogenes, serotype, mcnt, tcn
                     mixed_pos = sorted(mixed_pos)
                     # identifies larger deletion areas that are mixed. 
                     if mixed_pos[-1]-(mixed_pos[0]-1) == len(mixed_pos):
-                        mline = [l for l in all_reads if l.split('\t')[1] == str(mixed_pos[0]-1)][0]
+                        mline = [l for l in all_reads if l.split('\t')[1] == str(mixed_pos[0])][0]
                         consensus, depth, freq, insertions, deletions, mixed = get_consensus(mline)
                         if deletions:
                             if len(set([f.upper() for f in deletions])) == 1:
@@ -1006,7 +1034,7 @@ def get_ignore_pos(unmatched_lines):
 # Main function                                                #
 # ============================================================= #
 
-def find_serotype(fastq_path, serotypes, reference_directory, output_dir, bowtie_path, samtools_path, logger, workflow='', version = ''):
+def find_serotype(fastq_path, serotypes, reference_directory, output_dir, bowtie_path, samtools_path, clean_bam, logger, workflow='', version = ''):
     """
     This is the main function that calls other functions to determine serotype.
 
@@ -1045,12 +1073,18 @@ def find_serotype(fastq_path, serotypes, reference_directory, output_dir, bowtie
             sys.exit(1)
 
     # read the reference files (reference fasta and mutationdb.pickle)associated with given serotypes
-    unique, reference_fasta_file = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", parse_serotype_specific_info, serotypes, reference_directory, outdir, fastq, logger, workflow, version)
+    unique, reference_fasta_file, serotypes = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", parse_serotype_specific_info, serotypes, reference_directory, outdir, fastq, logger, workflow, version)
     if unique != None:
         sorted_bamfile, reference_fasta_file = try_and_except(input_dir+"/logs/SNP_based_serotyping.stderr", bowtie_map.mapping, fastq, reference_fasta_file, bowtie_path, samtools_path, outdir, logger)
         match, sample = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", pileup_investigation, unique, sorted_bamfile, reference_fasta_file, serotypes, samtools_path, logger)
         try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", output_xml, match, outdir, sample, unique, logger, workflow, version)
+        if clean_bam == True: # remove bam files if -c option is selected
+            bamfiles = glob.glob(sorted_bamfile+'*')
+            for file in bamfiles: os.remove(file)
     # clean up all unnecessary files
-    tmp = glob.glob(os.path.join(outdir, '*tmp*'))
-    if tmp:
-        clean_up(tmp[0], logger)
+    if os.path.exists(outdir):
+        tmp = glob.glob(os.path.join(outdir, '*tmp*'))
+        if tmp:
+            clean_up(tmp[0], logger)
+
+  

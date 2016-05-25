@@ -47,6 +47,8 @@ def parse_args(args):
   _parser.add_argument('--output_dir', '-o', help='please provide an output directory [OPTIONAL]; if none provided a pneumo_capsular_typing folder will be created in the directory containing the fastq files')
   _parser.add_argument('--bowtie', '-b', help='please provide the path for bowtie2 [OPTIONAL]; defaults to bowtie2', default='bowtie2')
   _parser.add_argument('--samtools', '-s', help='please provide the path for samtools [OPTIONAL]; defaults to samtools', default='samtools')
+  _parser.add_argument('--cleanup', '-c', help='if used, all bam files generated will be removed upon completion', action = 'store_true', default='False')
+
 
   opts = _parser.parse_args(args)
   
@@ -120,16 +122,17 @@ def main(opts):
   logger = log_writer.setup_logger(info_file = opts.output_dir + "/logs/pneumo_capsular_typing.stdout", error_file = opts.output_dir + "/logs/pneumo_capsular_typing.stderr")
 
   #Step1: coverage based approach
-  hits = Serotype_determiner_functions.find_serotype(opts.input_directory, fastq_files, reference_fasta_file, opts.output_dir, opts.bowtie, opts.samtools, id, logger, workflow=workflow, version=version) ## addition for step2
+  hits = Serotype_determiner_functions.find_serotype(opts.input_directory, fastq_files, reference_fasta_file, opts.output_dir, opts.bowtie, opts.samtools, opts.cleanup, id, logger, workflow=workflow, version=version) ## addition for step2
   
   ## Step2: variant based approach
   print hits
-  if len(hits) == 1 and hits[0] in ['33A', '33F']: hits = ['33A', '33F'] # force all isolates with top hit 33A or 33F to go thought the variant-based approach; 33A and 33F coverage can be right at the 90% threshold
-  elif len(hits) == 1 and hits[0] in ['11A', '11B', '11C', '11D', '11F']: hits = ['11A', '11B', '11C', '11D', '11F'] # same for the serogroup 11 isolates
-  if len(hits) > 1 or hits==['06E']:
+  #if len(hits) == 1 and hits[0] in ['33A', '33F']: hits = ['33A', '33F'] # force all isolates with top hit 33A or 33F to go thought the variant-based approach; 33A and 33F coverage can be right at the 90% threshold
+  #elif len(hits) == 1 and hits[0] in ['11A', '11B', '11C', '11D', '11F']: hits = ['11A', '11B', '11C', '11D', '11F'] # same for the serogroup 11 isolates
+  #if len(hits) > 1 or hits==['06E']:
+  if hits != []:
     reference_directory = opts.variant_database
     logger = log_writer.setup_logger(info_file = opts.output_dir + "/logs/SNP_based_serotyping.stdout", error_file = opts.output_dir + "/logs/SNP_based_serotyping.stderr")
-    SNP_based_Serotyping_Functions.find_serotype(opts.input_directory, hits, reference_directory, opts.output_dir, opts.bowtie, opts.samtools, logger, workflow=workflow, version=version)
+    SNP_based_Serotyping_Functions.find_serotype(opts.input_directory, hits, reference_directory, opts.output_dir, opts.bowtie, opts.samtools, opts.cleanup, logger, workflow=workflow, version=version)
   write_component_complete(opts.output_dir)
 
 if __name__ == "__main__":
