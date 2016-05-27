@@ -700,6 +700,8 @@ def detect_snps(snps, reads_all, matches, serotype, mcnt, tcnt, unique_matched):
         coverage=round(coverage/100, 2)
         # find all positions with depth < 5
         low_coverage_bps = [int(l.split('\t')[1]) for l in all_reads if int(l.split()[3])<5]
+        if gene == 'wzy':
+            pass
         if coverage < 0.9 and serotype not in ['11A', '11D', '11F']: # coverage threshold for snps
             failure_tag = 'Low Coverage'
             unique_matched.append([gene, 'Failed', mutation, failure_tag, 'snps'])
