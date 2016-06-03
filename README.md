@@ -117,22 +117,34 @@ With Optional arguments:
 As mentioned above, serotype can be called either in STEP 1 when a highly distinctive capsular locus sequence is present or STEP 2 when two or more serotypes have a similar capsular locus sequence and the variants from CTV database are used for distinction. 
 In Examples folder, an example for each of the scenarios is given; PHESPV0253 isolate is serotype 7B by both WGS and slide agglutination and it's an example of PneumoCaT STEP 2 analysis, whereas PHESPV0301 is serotype 14 and is an example of PneumoCaT STEP 1 analysis.
 Each folder contains the fastq files and the expected final result.xml file.
+
 ## Troubleshooting
 ------------------
-### Formats for the output of failure
+### Glossary of Terms
 
-Eight different formats of failure values are returned depending on the coverage statistic values and individual mutations:
+Five different formats of failure values are returned when no serotype can be predicted:
 
-* "Reference data not available ['24B', '24F']": Serogroups 24 and 32 have no available reference data.
-* "Mixed ['01', '22A', '22F']": The combination of serotypes matched with more than 90% coverage during step 1 does not correspond to any known serogroup or genogroup. In this case mixed culture is suspected.
-* “Low coverage”: Less than 90% coverage of the gene sequence.
-* "SNP position 1002: Depth < 5”: Nucleotide position covered by less than 5 reads.
-* “SNP position 1002 not covered”: No reads map at this nucleotide position.
-* "Mixed: {'allele-2': 0.99, 'allele-1': 0.99}": Mixed samples based on presence of two alleles for the gene with breakdown of coverage for the alleles found. There could be two scenarios in this case:
-  * {'allele-2': 0.99, 'allele-1': 0.99}: when both alleles has coverage more than 90% then a mixed culture is suspected.
-  * {'allele-1': 0.75, 'allele-2': 0.25}: In this case, further bioinformatics investigation is required to determine chimeric state.
-* "Mixed: (413, 414),TA/--,TA:0.67,--:0.33”: Mixed genotype at specific region with breakdown of frequency for each state. Usually corresponds to frameshift mutation responsible for loss of function (pseudogene).
-* "Mixed: (215: {'A': 0, 'C': 64, 'T': 67, 'G': 0})”: Mixed genotype at specific position with breakdown of nucleotides found.
+* "Reference data not available: Serogroup 24": Serogroups 24 and 32 have no available reference data.
+* "Mixed: ['01', '22A', '22F']": The combination of serotypes matched with more than 90% coverage during step 1 does not correspond to any known serogroup or genogroup.In this case mixed culture is suspected.
+* "Mixed: ['06A', '06B']": If mixed is returned at step 2 then a "Mixed" tag has been returned for one or more of the variants. For example:
+  * "Mixed: {'allele-2': 0.99, 'allele-1': 0.99}": Mixed samples based on presence of two alleles for the gene with breakdown of coverage for the alleles found. There could be two scenarios in this case:
+    * {'allele-2': 0.99, 'allele-1': 0.99}: when both alleles has coverage more than 90% then a mixed culture is suspected.
+    * {'allele-1': 0.75, 'allele-2': 0.25}: In this case, further bioinformatics investigation is required to determine chimeric state.
+  * "Mixed: (721, 722),G/-,G:0.67,-:0.33”: Mixed genotype at specific region with breakdown of frequency for each state. Usually corresponds to frameshift mutation responsible for loss of function (pseudogene).
+  * "Mixed: (215: {'A': 0, 'C': 64, 'T': 67, 'G': 0})”: Mixed genotype at specific position with breakdown of nucleotides found.
+* "Serotype undetermined": If no variant pattern is matched 100% then no serotype can be predicted and "Serotype undetermined" is reported. This could be due to either a new variant pattern that should be investigated further (e.g. new molecular subtype or new serotype) or coverage issues:
+  * “Low coverage”: Less than 90% coverage of the gene sequence.
+  * "SNP position 1002: Depth < 5”: Nucleotide position covered by less than 5 reads.
+  * “SNP position 1002 not covered”: No reads map at this nucleotide position.
+* "Failed": This output is associated with step 1 and coverage <90% for the capsular locus sequence with the highest coverage. This tag denote an absence of a fully functional capsular locus and can be interpreted in two different ways based on the coverage values:
+  * If coverage < 60%: this corresponds to a non-typable isolate. This was tested in the lab with clinical isolates using a traditional serotyping method (slide agglutination with SSI serum). This will be tested further and an appropriate result should be added in the future.
+  * If coverage > 60%: this corresponds to a partial capsule and in all cases seen so far the isolate still expresses a capsule.
+
+#### Exceptions
+
+* 15B/C: A presence of a mixed 15B/C profile ("Mixed: (413, 414),TA/--,TA:0.67,--:0.33”) in wciZ gene has been reported in various publications and 15B/C is now widely accepted as a reported serotype and is a valid output for PneumoCaT. However **"Mixed: ['15B', '15C']"** might still be reported and this should not be confused with 15B/C. In this case, "Mixed" has been detected in variants other than wciZ pos 413 and this should be investigated further. 
+* "Mixed: ['07A', '07B']": corresponds to a serotype 7A isolate. Similar to 15B/C, 7A and 7F are distinguished by a frameshift mutation and as yet no pure 7A (wcwD insT 587) has been found using PneumoCaT (n=3). In the cases where mixed profile was given they serotyped as 7A. Unlike 15B/C this has not been validated in a large number of samples so no inferences can yet be made. We would be grateful for any serotype 7A or Mixed: ['07A', '07B'] to help with further PneumoCaT development.
+
 
 ### Threshold values
 
