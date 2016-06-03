@@ -115,7 +115,7 @@ With Optional arguments:
 ------------------
 
 As mentioned above, serotype can be called either in STEP 1 when a highly distinctive capsular locus sequence is present or STEP 2 when two or more serotypes have a similar capsular locus sequence and the variants from CTV database are used for distinction. 
-In Examples folder, an example for each of the scenarios is given; PHESPV0253 isolate is serotype 7B by both WGS and slide agglutination and it's an example of PneumoCaT STEP 2 analysis, whereas PHESPV0301 is serotype 14 and is an example of PneumoCaT STEP 1 analysis.
+In Examples folder, an example for each of the scenarios is given; PHESPV0253 isolate is serotype 7B by both WGS and slide agglutination and it's an example of PneumoCaT STEP 2 analysis, whereas PHESPV1910 is serotype 5 and is an example of PneumoCaT STEP 1 analysis.
 Each folder contains the fastq files and the expected final result.xml file.
 
 ## Troubleshooting
