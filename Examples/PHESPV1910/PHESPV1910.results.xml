@@ -1,0 +1,14 @@
+<ngs_sample id="PHESPV1910">
+  <workflow value="PneumoCaT" version="1.0"/>
+  <results>
+    <result type="Serotype" value="05">
+      <result_data type="QC_coverage" value="99.67"/>
+      <result_data type="QC_mean_depth" value="136.3"/>
+      <result_data type="QC_minimum_depth" value="5"/>
+      <result_data type="QC_meanQ" value="36.6"/>
+      <result_data type="second_value" value="03"/>
+      <result_data type="QC_coverage_second_value" value="38.73"/>
+    </result>
+  </results>
+</ngs_sample>
+
