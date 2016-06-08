@@ -655,10 +655,11 @@ def detect_pseudogene(reads_all, matched_reads, pseudogenes, serotype, mcnt, tcn
                                 deletion = [f.upper() for f in deletions][0]
                             else:
                                 deletion = Counter([f.upper() for f in deletions]).most_common()[0][0]
-                            wt = re.search(r'[ACGT]+', deletion).group()
-                            dfreq = max([float(re.search(r'-:[0-9\.]{3,4}', m[2]).group().split(':')[1]) for m in Mixed])
-                            wt_freq = min([float(re.search(r'[ACGT]{1}:[0-9\.]{3,4}', m[2]).group().split(':')[1]) for m in Mixed])
-                            Mixed = [(mixed_pos[0], mixed_pos[-1]), wt+'/'+len(wt)*'-', wt+':'+str(wt_freq), '-'*len(wt)+':'+str(dfreq)]
+                        wt = re.search(r'[ACGT\-]+', mixed.split(',')[0]).group()
+                        alt = re.search(r'[ACGT\-]+', mixed.split(',')[1]).group()
+                        altfreq = re.search(r'[0-9\.]{3,4}', mixed.split(',')[1]).group()
+                        wt_freq = re.search(r'[0-9\.]{3,4}', mixed.split(',')[0]).group()
+                        Mixed = [(mixed_pos[0], mixed_pos[-1]), wt+'/'+alt, wt+':'+str(wt_freq), alt+':'+str(altfreq)]
                     failure_tag = 'Mixed:'+ ','.join([str(m) for m in Mixed])
                     pseudo = 'Failed'
                     if mutation == []: mutation = 'None'
@@ -812,7 +813,7 @@ def check_for_inactivating_mutations(gene, mutation, region, all_reads, unmatche
         if int(l.split('\t')[1]) in ignore_pos:
             # if the snp is at the beginning or end of the covered area
             # ingore it as the ends of the reads seem to be variable as a byproduct
-            # of sequencing. Discuss with Anthony??? Example COPENHAGEN-33A-2 and wcjE
+            # of sequencing. Example COPENHAGEN-33A-2 and wcjE
             seq+=l.split('\t')[2]
         elif freq >= 0.75 and consensus in ['A', 'C', 'G', 'T'] and depth>= 5:
             seq+= consensus.upper()
