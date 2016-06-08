@@ -648,18 +648,23 @@ def detect_pseudogene(reads_all, matched_reads, pseudogenes, serotype, mcnt, tcn
                     mixed_pos = sorted(mixed_pos)
                     # identifies larger deletion areas that are mixed. 
                     if mixed_pos[-1]-(mixed_pos[0]-1) == len(mixed_pos):
-                        mline = [l for l in all_reads if l.split('\t')[1] == str(mixed_pos[0])][0]
-                        consensus, depth, freq, insertions, deletions, mixed = get_consensus(mline)
-                        if deletions:
-                            if len(set([f.upper() for f in deletions])) == 1:
-                                deletion = [f.upper() for f in deletions][0]
-                            else:
-                                deletion = Counter([f.upper() for f in deletions]).most_common()[0][0]
-                        wt = re.search(r'[ACGT\-]+', mixed.split(',')[0]).group()
-                        alt = re.search(r'[ACGT\-]+', mixed.split(',')[1]).group()
-                        altfreq = re.search(r'[0-9\.]{3,4}', mixed.split(',')[1]).group()
-                        wt_freq = re.search(r'[0-9\.]{3,4}', mixed.split(',')[0]).group()
-                        Mixed = [(mixed_pos[0], mixed_pos[-1]), wt+'/'+alt, wt+':'+str(wt_freq), alt+':'+str(altfreq)]
+                        wt = ''.join([re.search(r'[ACGT\-]+', f[2].split(',')[0]).group() for f in Mixed])
+                        alt = ''.join([re.search(r'[ACGT\-]+', f[2].split(',')[1]).group() for f in Mixed])
+                        wt_freq = max([float(re.search(r'[0-9\.]{3,4}', f[2].split(',')[0]).group()) for f in Mixed])
+                        altfreq = max([float(re.search(r'[0-9\.]{3,4}', f[2].split(',')[1]).group()) for f in Mixed])
+                        #mline = [l for l in all_reads if l.split('\t')[1] == str(mixed_pos[0])][0]
+                        #consensus, depth, freq, insertions, deletions, mixed = get_consensus(mline)
+                        #if deletions:
+                        #    if len(set([f.upper() for f in deletions])) == 1:
+                        #        deletion = [f.upper() for f in deletions][0]
+                        #    else:
+                        #        deletion = Counter([f.upper() for f in deletions]).most_common()[0][0]
+                        #wt = re.search(r'[ACGT\-]+', mixed.split(',')[0]).group()
+                        #alt = re.search(r'[ACGT\-]+', mixed.split(',')[1]).group()
+                        #altfreq = re.search(r'[0-9\.]{3,4}', mixed.split(',')[1]).group()
+                        #wt_freq = re.search(r'[0-9\.]{3,4}', mixed.split(',')[0]).group()
+                        
+                        Mixed = [(mixed_pos[0], mixed_pos[-1]), wt+'/'+alt, wt+':'+str(wt_freq), alt+':'+str(altfreq)] if len(Mixed)>1 else [mixed_pos[0], wt+'/'+alt, wt+':'+str(wt_freq), alt+':'+str(altfreq)] 
                     failure_tag = 'Mixed:'+ ','.join([str(m) for m in Mixed])
                     pseudo = 'Failed'
                     if mutation == []: mutation = 'None'
