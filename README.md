@@ -141,7 +141,7 @@ Five different formats of failure values are returned when no serotype can be pr
 #### Exceptions
 
 * 15B/C: A presence of a mixed 15B/C profile ("Mixed: (413, 414),TA/--,TA:0.67,--:0.33”) in wciZ gene has been reported in various publications and 15B/C is now widely accepted as a reported serotype and is a valid output for PneumoCaT. However **"Mixed: ['15B', '15C']"** might still be reported and this should not be confused with 15B/C. In this case, "Mixed" has been detected in variants other than wciZ pos 413 and this should be investigated further. 
-* "Mixed: ['07A', '07B']": corresponds to a serotype 7A isolate. Similar to 15B/C, 7A and 7F are distinguished by a frameshift mutation and as yet no pure 7A (wcwD insT 587) has been found using PneumoCaT (n=3). In the cases where mixed profile was given they serotyped as 7A. Unlike 15B/C this has not been validated in a large number of samples so no inferences can yet be made. We would be grateful for any serotype 7A or Mixed: ['07A', '07B'] to help with further PneumoCaT development.
+* "Mixed: ['07A', '07F']": corresponds to a serotype 7A isolate. Similar to 15B/C, 7A and 7F are distinguished by a frameshift mutation and as yet no pure 7A (wcwD insT 587) has been found using PneumoCaT (n=3). In the cases where mixed profile was given they serotyped as 7A. Unlike 15B/C this has not been validated in a large number of samples so no inferences can yet be made. We would be grateful for any serotype 7A or Mixed: ['07A', '07F'] to help with further PneumoCaT development.
 
 
 ### Threshold values
