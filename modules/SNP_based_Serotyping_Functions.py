@@ -543,17 +543,17 @@ def detect_alleles(genes, reads_all, serotype, mcnt, tcnt, unique_matched):
             _metrics[gene][allele] = [coverage[allele], avg_depth, min_depth, max_depth, ranges, meanQ, length]
             coverage[allele]=round(coverage[allele]/100, 2)
 
-        if coverage.values().count(1) == 1 and len([f for f in coverage.values() if f >= 0.9])==1: # check for 100% coverage of a single allele
+        if coverage.values().count(1) == 1 and len([f for f in coverage.values() if f >= 0.8])==1: # check for 100% coverage of a single allele
             allele = [f for f in coverage.keys() if coverage[f] == 1][0]
             if genes[gene][serotype] == allele:
                 mcnt += 1
                 unique_matched.append([gene, allele, coverage, failure_tag, 'allele'])
-        elif [f for f in coverage.values() if f >= 0.9] and [f for f in coverage.values() if f < 0.2]: # check for coverage > 90% for one allele and <10% for the second
+        elif [f for f in coverage.values() if f >= 0.8] and [f for f in coverage.values() if f < 0.2]: # check for coverage > 90% for one allele and <10% for the second
             allele = [f for f in coverage.keys() if coverage[f] > 0.8][0]
             if genes[gene][serotype] == allele:
                 mcnt += 1
                 unique_matched.append([gene, allele, coverage, failure_tag, 'allele'])
-        elif len([f for f in coverage.values() if f < 0.9]) == len(coverage.values()):
+        elif len([f for f in coverage.values() if f < 0.8]) == len(coverage.values()):
             failure_tag = 'Low coverage: ' + str(coverage)
             unique_matched.append([gene, 'Failed', mutation, failure_tag, 'allele'])
         else: # chimeras or complete mixed sample i.e. 100% coverage for 2 alleles
