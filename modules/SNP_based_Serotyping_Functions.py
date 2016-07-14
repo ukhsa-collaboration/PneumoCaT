@@ -543,7 +543,7 @@ def detect_alleles(genes, reads_all, serotype, mcnt, tcnt, unique_matched):
             _metrics[gene][allele] = [coverage[allele], avg_depth, min_depth, max_depth, ranges, meanQ, length]
             coverage[allele]=round(coverage[allele]/100, 2)
 
-        if coverage.values().count(1) == 1 and len([f for f in coverage.values() if f >= 0.8])==1: # check for 100% coverage of a single allele
+        if coverage.values().count(1) == 1 and len([f for f in coverage.values() if f >= 0.9])==1: # check for 100% coverage of a single allele
             allele = [f for f in coverage.keys() if coverage[f] == 1][0]
             if genes[gene][serotype] == allele:
                 mcnt += 1
