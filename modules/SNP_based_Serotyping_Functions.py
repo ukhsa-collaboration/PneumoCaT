@@ -319,17 +319,17 @@ def get_consensus(line):
             insertions = [f.upper() for f in insertions]
             ins, icnt = Counter(insertions).most_common()[0]
             ins_freq = round(icnt/float(len(line.split('\t')[-1])),2)
-            if icnt >= 5 and ins_freq >= 0.75: # if it passes the criteria (d>5, f>0.75) add the insertion to the consensus bp
+            if icnt >= 5 and ins_freq >= 0.8: # if it passes the criteria (d>5, f>0.8) add the insertion to the consensus bp
                 consensus += re.search(r'[ACGT]+', ins).group()
                 insertions = [ins, ins_freq, icnt]
-            elif ins_freq <= 0.75 and ins_freq >= 0.25 and consensus == line.split('\t')[2]: # else recalculate frequence for consensus bp if consensus == ' or .
+            elif ins_freq <= 0.8 and ins_freq >= 0.2 and consensus == line.split('\t')[2]: # else recalculate frequence for consensus bp if consensus == ' or .
                 freq = round(cnt/float(depth),2)
                 mixed = '{nt1}:{cnt1},{nt2}:{cnt2}'.format(nt1=consensus, cnt1=freq, nt2=consensus+re.search(r'[ACGT]+', ins).group(), cnt2=ins_freq)
                 if freq < ins_freq:
                     consensus += re.search(r'[ACGT]+', ins).group()
                     insertions = [ins, ins_freq, icnt]
                     freq = ins_freq
-        if freq<=0.75 and freq>=0.25 and mixed == '': # report mixed position
+        if freq<=0.8 and freq>=0.2 and mixed == '': # report mixed position
             if consensus == line.split('\t')[2] and Counter(filtered_bps).most_common()[1][0] not in [',','.']:
                 mixed = '{nt1}:{cnt1},{nt2}:{cnt2}'.format(nt1=consensus, cnt1=freq, nt2=Counter(filtered_bps).most_common()[1][0], cnt2=round(Counter(filtered_bps).most_common()[1][1]/float(depth),2))
                 consensus=consensus+'/'+Counter(filtered_bps).most_common()[1][0]
@@ -503,7 +503,7 @@ def detect_genes(reads_all, serotype, genes, serotypes):
         # get metrics
         coverage, avg_depth, min_depth, max_depth, ranges, meanQ, covered_bps, length = get_metrics(all_reads, gene)
         filtered_coverage = round(len([l for l in all_reads if int(l.split('\t')[3]) >= 5])/float(length), 3)
-        _metrics[gene] = [filtered_coverage*100, avg_depth, min_depth, max_depth, ranges, meanQ, length]
+        _metrics[gene] = [round(filtered_coverage*100,2), avg_depth, min_depth, max_depth, ranges, meanQ, length]
         if (filtered_coverage==0 and genes[gene]==0): 
             mcnt+= 1
             unique_matched.append([gene, genes[gene], mutation, 'None', 'genes'])
@@ -580,6 +580,15 @@ def detect_pseudogene(reads_all, matched_reads, pseudogenes, serotype, mcnt, tcn
         failure_tag = 'None'
         tcnt += 1
 
+        if gene in _metrics.keys() and _metrics[gene][0] < 85:
+            if pseudogenes[serotype][gene][0] == 1:
+                mcnt += 1
+                pseudo = 1
+                mutation = 'Low coverage'
+                unique_matched.append([gene, pseudo, 'Pseudogene:'+mutation, failure_tag, 'pseudo'])
+            continue
+                
+            
         # get pileup lines for the gene
         all_reads = [l for l in reads_all if l.startswith(gene)]
         matched_all = [l for l in matched_reads if l.startswith(gene)]
@@ -825,8 +834,9 @@ def check_for_inactivating_mutations(gene, mutation, region, all_reads, unmatche
             if l in unmatched and consensus != l.split('\t')[2]:
                 mutation.append('{0}{1}{2}'.format(l.split('\t')[2],l.split('\t')[1],consensus))
         elif freq >= 0.75 and consensus == '-' and depth>= 5:
-            mutation.append(['{0}del{1}'.format(l.split('\t')[1], l.split('\t')[2])]) 
-            continue
+            mutation.append('{0}del{1}'.format(l.split('\t')[1], l.split('\t')[2])) 
+            if len(l.split('\t')[2])%3 != 0:
+                frameshift = '{0}del{1}'.format(l.split('\t')[1], l.split('\t')[2])
         elif len(consensus) > 1 and freq >= 0.75 and mixed == '':
             seq+= consensus.upper()
             inserted_bps = re.sub('\+\d{1,2}', '', insertions[0])

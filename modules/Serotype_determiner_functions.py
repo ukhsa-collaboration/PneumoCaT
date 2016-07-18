@@ -54,7 +54,7 @@ def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bow
   bam = try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", mapping, input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, id, logger)
   output_file = open(output_dir + "/" + id + ".results.xml", "w")
   try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", best_coverage,bam,reference_fasta_file)
-  hits = try_and_except(input_directory + "/logs/strep_pneumo_serotyping.stderr", output_all,bam,reference_fasta_file,output_file,id,workflow,version) # added for step 2
+  hits = try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", output_all,bam,reference_fasta_file,output_file,id,workflow,version) # added for step 2
   try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", cleanup,output_dir)
   if clean_bam == True:
     bamfiles = glob.glob(bam+'*')
@@ -218,19 +218,22 @@ def best_coverage(bam,fasta):
   selected_id = ""
   second_selected_id = ""
   coverage = {} ## addition for step2
+  mean_depth = {}
   # get lengths and ids from reference_fasta_fileerence_length function
   (lengths,ids) = reference_fasta_fileerence_length(fasta)
   for determine_reference_fasta_fileerence_length,id in zip(lengths,ids):
     bases_with_coverage_array = []
+    all_bases_coverage = []
     # go through each id and perform pileup
     for pileupcolumn in bamfile.pileup(id):
+      all_bases_coverage.append(pileupcolumn.n)
     # Any coverage greater than zero
       if pileupcolumn.n > 4:
         # append all base coverages for the id in a list 
         bases_with_coverage_array.append(pileupcolumn.n)
     # find the overall percentage coverage for each id
     percent_coverage_for_id = len(bases_with_coverage_array)/float(determine_reference_fasta_fileerence_length+1)*100
-
+    mean_depth[id] = sum(all_bases_coverage)/float(len(all_bases_coverage)) if len(all_bases_coverage)>0 else 0
     # As the highest percentage coverage is set to zero at the start of the script, this will increase as the script loops through all ids (or serotypes). Until it finds no percentage higher than the previous one, it assigns the highest_percent_coverage = percent_coverage_for_id.  Same story for the second highest coverage, its the one before the highest.
     coverage[id] = percent_coverage_for_id ## addition for step2
     if percent_coverage_for_id > highest_percent_coverage:
@@ -244,10 +247,10 @@ def best_coverage(bam,fasta):
   
   ## export hits into a yaml file to investigate failed samples
   out_fp = open(os.path.join(os.path.dirname(bam), 'coverage_summary.txt'), 'w')
-  out_fp.write('Serotype\tCoverage\n')
+  out_fp.write('Serotype\tCoverage\tDepth\n')
   sorted_coverage = sorted(coverage.items(), key=operator.itemgetter(1), reverse=True)
   for ser, cov in sorted_coverage:
-    out_fp.write(ser+'\t'+str(cov)+'\n')
+    out_fp.write(ser+'\t'+str(cov)+'\t'+str(mean_depth[ser])+'\n')
   out_fp.close()
 
   ## select hits > 90%
