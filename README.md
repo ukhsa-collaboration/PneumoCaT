@@ -83,11 +83,22 @@ Input files are required to have this pattern present \*1.fastq\* or \*2.fastq\*
 ## CTV database
 ---------------
 Capsular Type Variant (CTV) database is supplied as a structured directory (streptococcus-pneumoniae-ctvdb). Within this directory you can find:
-* reference.fasta - This file contains the capsular locus sequences for all 92 serotypes plus 6E and 23B1 first described in the publication.
+* reference.fasta - This file contains the capsular locus sequences for all 92 serotypes plus 6E and 23B1 first described in the publication. 
 * 19 subfolders corresponding to each genogroup recognised in publication. Each subfolder contains:
   * mutationdb.pickled - contains the variants that can distinguish the serotypes within this serogroup. This file is read by PneumoCaT during step 2.
   * mutationdb.yml - contains the same information as the mutationdb.pickled file but can be read using text editors.
   * reference.fasta - contains the sequences for the genes defined in the mutationdb file.
+
+## Working with a custom reference database
+-----------------------------------------
+For users that want to specify there own database of reference capsular locus sequences please follow the following instrcutions:
+* Create a copy of streptococcus-pneumoniae-ctvdb in the PneumoCaT directory
+
+  `cp -r streptococcus-pneumoniae-ctvdb streptococcus-pneumoniae-custom`
+* Within the streptococcus-pneumoniae-custom directory open the reference.fasta file and add/remove reference capsular locus sequences.
+* Make sure to save the file with the same name (reference.fasta).
+* When running PneumoCaT define the new database using the option -d followed by the path to streptococcus-pneumoniae-custom (see below).
+
 
 ## Run Examples
 ---------------
@@ -98,6 +109,15 @@ Default for all optional arguments:
 
 `python PneumoCaT.py -i <path-to-input-directory> `
 
+Example: 
+
+If the PneumoCaT directory was cloned to your environment follow this commands to run example PHESPV0253 :
+
+```
+cd PneumoCaT
+python PneumoCaT.py -i Examples/PHESPV0253
+```
+
 With Optional arguments:
 
 `python PneumoCaT.py -i <path-to-input-directory> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowties> -s <path-to-samtools>`
@@ -106,6 +126,15 @@ With Optional arguments:
 Default for all optional arguments:
 
 `python PneumoCaT -1 <path-to-FASTQ1> -2 <path-to-FASTQ2>`
+
+Example: 
+
+If the PneumoCaT directory was cloned to your environment follow this commands to run example PHESPV0253 :
+
+```
+cd PneumoCaT
+python PneumoCaT.py -1 Examples/PHESPV0253/PHESPV0253.R1.fastq.gz -2 Examples/PHESPV0253/PHESPV0253.R2.fastq.gz
+```
 
 With Optional arguments:
 
