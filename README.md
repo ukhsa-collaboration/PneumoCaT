@@ -19,13 +19,13 @@ PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approa
 ---------------------------
 
 PneumoCaT  is written with Python 2.7.5 and requires the following packages installed before running:
-* Bowtie (http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
-* Samtools (https://github.com/samtools/samtools)
-* PyYaml
-* numpy
-* lxml
-* pysam
-* biopython
+* Bowtie2 (https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/)
+* Samtools (https://sourceforge.net/projects/samtools/files/)
+* PyYaml (http://pyyaml.org/)
+* numpy (http://www.scipy.org/scipylib/download.html)
+* lxml  (http://lxml.de/installation.html)
+* pysam (https://github.com/pysam-developers/pysam)
+* biopython (https://github.com/biopython/biopython)
 
 ## Running PneumoCaT
 ----------------------------
