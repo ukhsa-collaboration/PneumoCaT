@@ -90,13 +90,14 @@ Capsular Type Variant (CTV) database is supplied as a structured directory (stre
   * reference.fasta - contains the sequences for the genes defined in the mutationdb file.
 
 ## Working with a custom reference database
------------------------------------------
-For users that want to specify there own database of reference capsular locus sequences please follow the following instrcutions:
+-------------------------------------------
+For users that want to specify their own database of reference capsular locus sequences please follow the following instructions:
 * Create a copy of streptococcus-pneumoniae-ctvdb in the PneumoCaT directory
 
   `cp -r streptococcus-pneumoniae-ctvdb streptococcus-pneumoniae-custom`
 * Within the streptococcus-pneumoniae-custom directory open the reference.fasta file and add/remove reference capsular locus sequences.
 * Make sure to save the file with the same name (reference.fasta).
+* Alternatively, if the user has an alternative fasta file already available, remove the reference.fasta file from streptococcus-pneumoniae-custom and replace it with the alternative fasta file. Again make sure to change the name to reference.fasta 
 * When running PneumoCaT define the new database using the option -d followed by the path to streptococcus-pneumoniae-custom (see below).
 
 
@@ -111,7 +112,7 @@ Default for all optional arguments:
 
 Example: 
 
-If the PneumoCaT directory was cloned to your environment follow this commands to run example PHESPV0253 :
+If the PneumoCaT directory was cloned to your environment follow these commands to run example PHESPV0253 :
 
 ```
 cd PneumoCaT
@@ -120,7 +121,7 @@ python PneumoCaT.py -i Examples/PHESPV0253
 
 With Optional arguments:
 
-`python PneumoCaT.py -i <path-to-input-directory> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowties> -s <path-to-samtools>`
+`python PneumoCaT.py -i <path-to-input-directory> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowtie2> -s <path-to-samtools>`
 
 ### Option 2: Use paths to fastq files
 Default for all optional arguments:
@@ -129,7 +130,7 @@ Default for all optional arguments:
 
 Example: 
 
-If the PneumoCaT directory was cloned to your environment follow this commands to run example PHESPV0253 :
+If the PneumoCaT directory was cloned to your environment follow these commands to run example PHESPV0253 :
 
 ```
 cd PneumoCaT
