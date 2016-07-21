@@ -110,18 +110,30 @@ Default for all optional arguments:
 
 `python PneumoCaT.py -i <path-to-input-directory> `
 
+\* This assumes that the paths to bowtie2 and samtools are included in the PATH environment variable. If not then options -b and -s should be used to define the full path to bowtie2 and samtools, respectively (see below).
+
 Example: 
 
-If the PneumoCaT directory was cloned to your environment follow these commands to run example PHESPV0253 :
+If the PneumoCaT directory was cloned to your environment follow these commands to run example PHESPV0253 using the provided reference database:
 
 ```
 cd PneumoCaT
 python PneumoCaT.py -i Examples/PHESPV0253
 ```
 
+\* This defaults options -b and -s to bowtie2 and samtools and will only work if the respective paths are added into the PATH environment database.
 With Optional arguments:
 
 `python PneumoCaT.py -i <path-to-input-directory> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowtie2> -s <path-to-samtools>`
+
+Example:
+
+If the PneumoCaT directory was cloned to your environment follow these commands to run example PHESPV0253 using a custom reference database and with defined paths to bowtie2 and samtools:
+
+```
+cd PneumoCaT
+python PneumoCaT.py -i Examples/PHESPV0253 -d streptococcus-pneumoniae-custom -b /usr/local/bowtie2-2.2.9/bowtie2 -s /usr/local/samtools-0.1.19/samtools
+```
 
 ### Option 2: Use paths to fastq files
 Default for all optional arguments:
