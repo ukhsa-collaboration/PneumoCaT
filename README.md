@@ -122,6 +122,7 @@ python PneumoCaT.py -i Examples/PHESPV0253
 ```
 
 \* This defaults options -b and -s to bowtie2 and samtools and will only work if the respective paths are added into the PATH environment database.
+
 With Optional arguments:
 
 `python PneumoCaT.py -i <path-to-input-directory> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowtie2> -s <path-to-samtools>`
