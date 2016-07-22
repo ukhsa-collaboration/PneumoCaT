@@ -106,7 +106,7 @@ For users that want to specify their own database of reference capsular locus se
 
 ### OPTION 1: Use input directory that contains fastq files for the isolate
 
-Default for all optional arguments:
+**Default for all optional arguments:**
 
 `python PneumoCaT.py -i <path-to-input-directory> `
 
@@ -123,7 +123,7 @@ python PneumoCaT.py -i Examples/PHESPV0253
 
 \* This defaults options -b and -s to bowtie2 and samtools and will only work if the respective paths are added into the PATH environment database.
 
-With Optional arguments:
+**With Optional arguments:**
 
 `python PneumoCaT.py -i <path-to-input-directory> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowtie2> -s <path-to-samtools>`
 
@@ -137,7 +137,8 @@ python PneumoCaT.py -i Examples/PHESPV0253 -d streptococcus-pneumoniae-custom -b
 ```
 
 ### Option 2: Use paths to fastq files
-Default for all optional arguments:
+
+**Default for all optional arguments:**
 
 `python PneumoCaT -1 <path-to-FASTQ1> -2 <path-to-FASTQ2>`
 
@@ -150,7 +151,7 @@ cd PneumoCaT
 python PneumoCaT.py -1 Examples/PHESPV0253/PHESPV0253.R1.fastq.gz -2 Examples/PHESPV0253/PHESPV0253.R2.fastq.gz
 ```
 
-With Optional arguments:
+**With Optional arguments:**
 
 `python PneumoCaT -1 <path-to-FASTQ1> -2 <path-to-FASTQ2> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowties> -s <path-to-samtools>`
 
