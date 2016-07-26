@@ -305,10 +305,13 @@ def output_all(bam,fasta,output_file,ngs_sample_id,workflow="",version=""):
   bases_with_coverage_array = []
   for pileupcolumn in bamfile.pileup(selected_id):
     for pileupread in pileupcolumn.pileups:
-      # qual_ascii is the quality for each base but in ascii format.
-      qual_ascii = pileupread.alignment.qual[pileupread.qpos]
-      # phred score is an integer representing the Unicode code point of the character in qual_ascii
-      phred_score = ord(qual_ascii) - 33 
+      try:
+        # qual_ascii is the quality for each base but in ascii format.
+        qual_ascii = pileupread.alignment.qual[pileupread.qpos]
+        # phred score is an integer representing the Unicode code point of the character in qual_ascii
+        phred_score = ord(qual_ascii) - 33
+      except AttributeError:
+        phred_score = pileupread.alignment.query_qualities[pileupread.query_position] if pileupread.query_position != None else 0
       # append all quals in one whole list
       quals.append(phred_score)
       if pileupcolumn.n > 4:
