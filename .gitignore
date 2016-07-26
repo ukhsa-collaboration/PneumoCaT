@@ -6,3 +6,4 @@ log.err
 log.out
 serotyping_job.sh
 modules/*.pyc
+Examples/*
