@@ -19,13 +19,13 @@ PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approa
 ---------------------------
 
 PneumoCaT  is written with Python 2.7.5 and requires the following packages installed before running:
-* Bowtie (http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
-* Samtools (https://github.com/samtools/samtools)
-* PyYaml
-* numpy
-* lxml
-* pysam
-* biopython
+* Bowtie2 (https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/)
+* Samtools (https://sourceforge.net/projects/samtools/files/)
+* PyYaml (http://pyyaml.org/)
+* numpy (http://www.scipy.org/scipylib/download.html)
+* lxml  (http://lxml.de/installation.html)
+* pysam (https://github.com/pysam-developers/pysam)
+* biopython (https://github.com/biopython/biopython)
 
 ## Running PneumoCaT
 ----------------------------
@@ -83,31 +83,75 @@ Input files are required to have this pattern present \*1.fastq\* or \*2.fastq\*
 ## CTV database
 ---------------
 Capsular Type Variant (CTV) database is supplied as a structured directory (streptococcus-pneumoniae-ctvdb). Within this directory you can find:
-* reference.fasta - This file contains the capsular locus sequences for all 92 serotypes plus 6E and 23B1 first described in the publication.
+* reference.fasta - This file contains the capsular locus sequences for all 92 serotypes plus 6E and 23B1 first described in the publication. 
 * 19 subfolders corresponding to each genogroup recognised in publication. Each subfolder contains:
   * mutationdb.pickled - contains the variants that can distinguish the serotypes within this serogroup. This file is read by PneumoCaT during step 2.
   * mutationdb.yml - contains the same information as the mutationdb.pickled file but can be read using text editors.
   * reference.fasta - contains the sequences for the genes defined in the mutationdb file.
+
+## Working with a custom reference database
+-------------------------------------------
+For users that want to specify their own database of reference capsular locus sequences please follow the following instructions:
+* Create a copy of streptococcus-pneumoniae-ctvdb in the PneumoCaT directory
+
+  `cp -r streptococcus-pneumoniae-ctvdb streptococcus-pneumoniae-custom`
+* Within the streptococcus-pneumoniae-custom directory open the reference.fasta file and add/remove reference capsular locus sequences.
+* Make sure to save the file with the same name (reference.fasta).
+* Alternatively, if the user has an alternative fasta file already available, remove the reference.fasta file from streptococcus-pneumoniae-custom and replace it with the alternative fasta file. Again make sure to change the name to reference.fasta 
+* When running PneumoCaT define the new database using the option -d followed by the path to streptococcus-pneumoniae-custom (see below).
+
 
 ## Run Examples
 ---------------
 
 ### OPTION 1: Use input directory that contains fastq files for the isolate
 
-Default for all optional arguments:
+**Default for all optional arguments:**
 
 `python PneumoCaT.py -i <path-to-input-directory> `
 
-With Optional arguments:
+\* This assumes that the paths to bowtie2 and samtools are included in the PATH environment variable. If not then options -b and -s should be used to define the full path to bowtie2 and samtools, respectively (see below).
 
-`python PneumoCaT.py -i <path-to-input-directory> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowties> -s <path-to-samtools>`
+Example: 
+
+If the PneumoCaT directory was cloned to your environment follow these commands to run example PHESPV0253 using the provided reference database:
+
+```
+cd PneumoCaT
+python PneumoCaT.py -i Examples/PHESPV0253
+```
+
+\* This defaults options -b and -s to bowtie2 and samtools and will only work if the respective paths are added into the PATH environment database.
+
+**With Optional arguments:**
+
+`python PneumoCaT.py -i <path-to-input-directory> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowtie2> -s <path-to-samtools>`
+
+Example:
+
+If the PneumoCaT directory was cloned to your environment follow these commands to run example PHESPV0253 using a custom reference database and with defined paths to bowtie2 and samtools:
+
+```
+cd PneumoCaT
+python PneumoCaT.py -i Examples/PHESPV0253 -d streptococcus-pneumoniae-custom -b /usr/local/bowtie2-2.2.9/bowtie2 -s /usr/local/samtools-0.1.19/samtools
+```
 
 ### Option 2: Use paths to fastq files
-Default for all optional arguments:
+
+**Default for all optional arguments:**
 
 `python PneumoCaT -1 <path-to-FASTQ1> -2 <path-to-FASTQ2>`
 
-With Optional arguments:
+Example: 
+
+If the PneumoCaT directory was cloned to your environment follow these commands to run example PHESPV0253 :
+
+```
+cd PneumoCaT
+python PneumoCaT.py -1 Examples/PHESPV0253/PHESPV0253.R1.fastq.gz -2 Examples/PHESPV0253/PHESPV0253.R2.fastq.gz
+```
+
+**With Optional arguments:**
 
 `python PneumoCaT -1 <path-to-FASTQ1> -2 <path-to-FASTQ2> -o <path-to-output-directory> -d <path-to-the-database> -b <path-to-bowties> -s <path-to-samtools>`
 
