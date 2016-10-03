@@ -1052,7 +1052,7 @@ def get_ignore_pos(unmatched_lines):
 # Main function                                                #
 # ============================================================= #
 
-def find_serotype(fastq_path, serotypes, reference_directory, output_dir, bowtie_path, samtools_path, clean_bam, logger, workflow='', version = ''):
+def find_serotype(input_dir, fastq_files, serotypes, reference_directory, output_dir, bowtie_path, samtools_path, clean_bam, logger, workflow='', version = ''):
     """
     This is the main function that calls other functions to determine serotype.
 
@@ -1066,30 +1066,7 @@ def find_serotype(fastq_path, serotypes, reference_directory, output_dir, bowtie
     # make output_directory
     outdir = os.path.join(output_dir, 'SNP_based_serotyping')
     if not os.path.exists(outdir): os.makedirs(outdir)
-
-    # extract path to fastq file; two possibilities either already provided or input directory provided
-    glob_pattern = "*fastq*"
-    if os.path.isdir(fastq_path): # if input directory provided
-        input_dir = fastq_path
-        fastq_files = glob.glob(os.path.join(fastq_path, glob_pattern))
-        if len(fastq_files) != 2 and fastq_files != []:
-            print "Unexpected number (" + str(len(fastq_files)) + ") of fastq files"
-            sys.exit(1)
-        if fastq_files == []:
-            fastq_files = glob.glob(os.path.join(fastq_path, '*.fastq*'))
-            if fastq_files == []:
-                print "No fastq files in the directory provided:", fastq_path
-                sys.exit(1)
-        fastq = [f for f in fastq_files if f.find('1.fastq') != -1][0]
-    else:
-        input_dir = os.path.dirname(fastq_path)
-        if input_dir == '': input_dir = os.getcwd()
-        if fastq_path.endswith('fastq.gz') or fastq_path.endswith('fastq'):
-            fastq = fastq_path
-        else:
-            print 'Please provide a fastq file'
-            sys.exit(1)
-
+    fastq = [f for f in fastq_files if f.find('1.fastq') != -1][0]
     # read the reference files (reference fasta and mutationdb.pickle)associated with given serotypes
     unique, reference_fasta_file, serotypes = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", parse_serotype_specific_info, serotypes, reference_directory, outdir, fastq, logger, workflow, version)
     if unique != None:

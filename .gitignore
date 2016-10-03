@@ -1,7 +1,7 @@
 *.bt2
 *.fai
 *.pyc
-test/*
+testing/*
 log.err
 log.out
 serotyping_job.sh

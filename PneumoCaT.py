@@ -132,7 +132,7 @@ def main(opts):
   if hits != []:
     reference_directory = opts.variant_database
     logger = log_writer.setup_logger(info_file = opts.output_dir + "/logs/SNP_based_serotyping.stdout", error_file = opts.output_dir + "/logs/SNP_based_serotyping.stderr")
-    SNP_based_Serotyping_Functions.find_serotype(opts.input_directory, hits, reference_directory, opts.output_dir, opts.bowtie, opts.samtools, opts.cleanup, logger, workflow=workflow, version=version)
+    SNP_based_Serotyping_Functions.find_serotype(opts.input_directory, fastq_files, hits, reference_directory, opts.output_dir, opts.bowtie, opts.samtools, opts.cleanup, logger, workflow=workflow, version=version)
   write_component_complete(opts.output_dir)
 
 if __name__ == "__main__":
