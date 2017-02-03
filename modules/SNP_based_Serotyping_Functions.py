@@ -1070,7 +1070,7 @@ def find_serotype(input_dir, fastq_files, serotypes, reference_directory, output
     # read the reference files (reference fasta and mutationdb.pickle)associated with given serotypes
     unique, reference_fasta_file, serotypes = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", parse_serotype_specific_info, serotypes, reference_directory, outdir, fastq, logger, workflow, version)
     if unique != None:
-        sorted_bamfile, reference_fasta_file = try_and_except(input_dir+"/logs/SNP_based_serotyping.stderr", bowtie_map.mapping, fastq, reference_fasta_file, bowtie_path, samtools_path, outdir, logger)
+        sorted_bamfile, reference_fasta_file = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", bowtie_map.mapping, fastq, reference_fasta_file, bowtie_path, samtools_path, outdir, logger)
         match, sample = try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", pileup_investigation, unique, sorted_bamfile, reference_fasta_file, serotypes, samtools_path, logger)
         try_and_except(output_dir+"/logs/SNP_based_serotyping.stderr", output_xml, match, outdir, sample, unique, logger, workflow, version)
         if clean_bam == True: # remove bam files if -c option is selected
