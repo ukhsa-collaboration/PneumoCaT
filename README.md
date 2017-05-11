@@ -3,6 +3,8 @@
 
 PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approach to assign capsular type to *S.pneumoniae* genomic data (Illumina). In the first step, reads from each readset are mapped to capsular locus sequences for all known capsular types (92 for S. pneumoniae plus 2 additional subtypes/molecular types). This step is considered successful if the readset matches > 90% to 1 or more capsular locus sequences. If it matches to a single capsular locus then PneumoCaT terminates here and reports this as the assigned capsular type. If more than 1 loci are matched then the tool moves to the second step; a variant based approach that utilises the capsular type variant (CTV) database to distinguish serotypes within a serogroup/genogroup. For more information you can refer to the publication.
 
+**NOTE** For people who are using the published dataset (ENA Project PRJEB14267) to validate the pipeline please download the fastq files under the Submitted Files (FTP) column. Apparently some post-submission processing occuring during ENA submission alters the files causing problems in subsequent analysis. 
+
 ## Table of content
 ---------------------------
 
