@@ -207,14 +207,6 @@ Mutations can be confidently reported if the percentage coverage for the gene is
   * no other snps are reported within ±5 nts area 
 * Pseudogenes: The overall coverage threshold has been reduced to 70% to allow for reporting large indels/truncations as a causal agent for loss of function. A functional orf is reported if coverage is more than 80% and a single orf is present that match the functional orf for the gene tested. This lower threshold (80% instead of 90%) has been empirically adjusted to allow for poor mapping in the beginning and end of the gene locus. If specific frameshift mutations are investigated then the same threshold as described above are used (SNPs).
 
-## Contact Information
-----------------------
-Georgia Kapatai 
-
-Email: Georgia.Kapatai@phe.gov.uk 
-
-Twitter: @gkapatai
-
 ## Licence Agreement
 --------------------
 This software is covered by GNU General Public License, version 3 (GPL-3.0).
