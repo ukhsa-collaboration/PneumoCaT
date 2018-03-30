@@ -128,7 +128,7 @@ def mapping(input_directory, fastqs, reference_fasta_file_path, output_dir, bowt
   log_writer.log_process(logger, process, log_error_to = "info")
   # sort bam
   log_writer.info_header(logger, "Sort the bam file")
-  process = subprocess.Popen([samtools, 'sort', bam, bam_sorted], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+  process = subprocess.Popen([samtools, 'sort', '-o', bam_sorted + ".bam", bam], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
   process.wait()
   log_writer.log_process(logger, process, log_error_to = "info")
   # index bam

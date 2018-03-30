@@ -104,7 +104,7 @@ def mapping(fastq_file, reference, bowtie_path, samtools_path, outdir, logger):
 
         # sort bam file
         log_writer.info_header(logger, "Sort the bam file")
-        subprocess.call([samtools_path, 'sort', bamfile, sorted_bam_prefix])
+        subprocess.call([samtools_path, 'sort', '-o', sorted_bam_prefix + '.bam', bamfile])
 
         # index bam file
         log_writer.info_header(logger, "Index the BAM file")
