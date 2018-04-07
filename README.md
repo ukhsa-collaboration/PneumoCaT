@@ -35,32 +35,47 @@ make
 * pysam (https://github.com/pysam-developers/pysam)
 * biopython (https://github.com/biopython/biopython)
 
+**NOTE:** The Samtools dependency issue has been resolved with the latest version of Samtools v1.7. For step by step instructions of installing all dependencies using conda see the SetUpInstructions.pdf document available in Documentation.
+
 ## Running PneumoCaT
 ----------------------------
-
 ```
-usage: python PneumoCaT.py [-h]
-                           [--input_directory INPUT_DIRECTORY]
-                           [--fastq_1 FASTQ_1] [--fastq_2 FASTQ_2]
+usage: python PneumoCaT.py [-h] [--input_directory INPUT_DIRECTORY]
+                    [--fastq_1 FASTQ_1] [--fastq_2 FASTQ_2]
+                    [--variant_database VARIANT_DATABASE]
+                    [--output_dir OUTPUT_DIR] [--threads THREADS]
+                    [--bowtie BOWTIE] [--samtools SAMTOOLS] [--cleanup]
 
-Arguments:
-  -h, --help            
-        show this help message and exit
+optional arguments:
+  -h, --help            show this help message and exit
   --input_directory INPUT_DIRECTORY, -i INPUT_DIRECTORY
-        please provide the path to the directory contains the fastq files; [REQUIRED - OPTION 1]
+                        please provide the path to the directory contains the
+                        fastq files [REQUIRED - OPTION 1]
   --fastq_1 FASTQ_1, -1 FASTQ_1
-        Fastq file pair 1 [REQUIRED - OPTION 2]
+                        Fastq file pair 1 [REQUIRED - OPTION 2]
   --fastq_2 FASTQ_2, -2 FASTQ_2
-        Fastq file pair 2 [REQUIRED - OPTION 2]
+                        Fastq file pair 2 [REQUIRED - OPTION 2]
   --variant_database VARIANT_DATABASE, -d VARIANT_DATABASE
-        variant database [OPTIONAL]; defaults to streptococcus-pneumoniae-ctvdb in the github directory
+                        variant database [OPTIONAL]; defaults to
+                        streptococcus-pneumoniae-ctvdb in the github directory
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
-        please provide an output directory [OPTIONAL]; if none provided a pneumo_capsular_typing folder will be created in the directory containing the fastq files
+                        please provide an output directory [OPTIONAL]; if none
+                        provided a pneumo_capsular_typing folder will be
+                        created in the directory containing the fastq files
+  --threads THREADS, -t THREADS
+                        number of threads used for bowtie2 [OPTIONAL];
+                        default=4
   --bowtie BOWTIE, -b BOWTIE
-        please provide the path for bowtie2 [OPTIONAL]; defaults to bowtie2
+                        please provide the path for bowtie2 [OPTIONAL];
+                        defaults to bowtie2
   --samtools SAMTOOLS, -s SAMTOOLS
-        please provide the path for samtools [OPTIONAL]; defaults to samtools
+                        please provide the path for samtools [OPTIONAL];
+                        defaults to samtools
+  --cleanup, -c         if used, all bam files generated will be removed upon
+                        completion
+
 ```
+
 ## Input files
 --------------
 
