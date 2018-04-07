@@ -34,13 +34,21 @@ import log_writer
 from utility_functions import *
 
 
+def msg():
+  return '''python PneumoCaT.py [-h] [--input_directory INPUT_DIRECTORY]
+                                [--fastq_1 FASTQ_1] [--fastq_2 FASTQ_2]
+                                [--variant_database VARIANT_DATABASE]
+                                [--output_dir OUTPUT_DIR] [--threads THREADS]
+                                [--bowtie BOWTIE] [--samtools SAMTOOLS] [--cleanup]
+          '''
+
 def parse_args(args):
   """
   We have set parser = argparse.ArgumentParser() and added all arguments by adding parser.add_argument.
   """
   global _parser
   
-  _parser = argparse.ArgumentParser()
+  _parser = argparse.ArgumentParser(description='PneumoCaT.py', usage=msg())
   _parser.add_argument('--input_directory', '-i', help='please provide the path to the directory contains the fastq files [REQUIRED - OPTION 1]')
   _parser.add_argument('--fastq_1', '-1', help='Fastq file pair 1 [REQUIRED - OPTION 2]')
   _parser.add_argument('--fastq_2', '-2', help='Fastq file pair 2 [REQUIRED - OPTION 2]')
@@ -53,6 +61,10 @@ def parse_args(args):
 
   opts = _parser.parse_args(args)
   
+  if not (opts.input_directory or (opts.fastq_1 and opts.fastq_2)):
+    _parser.print_help(sys.stderr)    
+    sys.exit(1)
+
   return opts
 
 
