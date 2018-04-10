@@ -22,10 +22,10 @@ PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approa
 
 PneumoCaT  is written with Python 2.7.5 and requires the following packages installed before running:
 * Bowtie2 (https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/)
-* Samtools (https://sourceforge.net/projects/samtools/files/samtools/0.1.19/) - ~~**version specific**~~ (see NOTE below). To install after downloading:
+* Samtools version 1.7+ (https://sourceforge.net/projects/samtools/files/samtools/1.7/)  (see NOTE below). To install after downloading:
 
 ```
-cd <path-to>/samtools-0.1.19
+cd <path-to>/samtools-1.7
 make
 ```
 
@@ -35,7 +35,18 @@ make
 * pysam (https://github.com/pysam-developers/pysam)
 * biopython (https://github.com/biopython/biopython)
 
-**NOTE:** The Samtools dependency issue has been resolved with the latest version of Samtools v1.7. For step by step instructions of installing all dependencies using conda see the SetUpInstructions.pdf document available in Documentation.
+**NOTE:** Previous dependency to Samtools version 0.1.19 was due to incompatibility of pysam with later version. This has now been resolved with version 1.7 so PneumoCaT has been changed to work with this version of Samtools and hopefully the ones after that (versions 1.7+). Version 0.1.19 is no longer compatible due to changes on the structure of the samtools command specifically, the latest versions require an output filename using tag -o instead of the prefix required by the earliest versions.
+  
+  version 0.1.19
+  ```
+  samtools sort [options] <in.bam> <out.prefix>
+  ```
+  version 1.7
+  ```
+  samtools sort [options...] -o FILENAME <in.bam>
+  ```
+
+**For step by step instructions for installing all dependencies using conda see the SetUpInstructions.pdf document available in Documentation.**
 
 ## Running PneumoCaT
 ----------------------------
