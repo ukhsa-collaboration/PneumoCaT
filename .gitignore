@@ -7,3 +7,5 @@ log.out
 serotyping_job.sh
 modules/*.pyc
 Examples/*
+Documentation/*.docx
+.gitignore

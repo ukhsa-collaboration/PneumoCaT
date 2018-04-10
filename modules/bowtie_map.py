@@ -75,7 +75,7 @@ def clean_up(tmp, logger):
         raise
 
 
-def mapping(fastq_file, reference, bowtie_path, samtools_path, outdir, logger):
+def mapping(fastq_file, reference, bowtie_path, samtools_path, outdir, logger, threads=4):
     sample = os.path.basename(fastq_file).split('.')[0]
     # create index if not available
     tmp = outdir + "/{0}_tmp/".format(sample)
@@ -93,18 +93,18 @@ def mapping(fastq_file, reference, bowtie_path, samtools_path, outdir, logger):
     if not os.path.isfile(sorted_bam_prefix+'.bam'): # change this to bamfiles/prefix.sorted.bam
         # create sam file
         log_writer.info_header(logger, "Running bowtie to generate sam file")
-        subprocess.call([bowtie_path, '--fr', '--minins', '300', '--maxins', '1100', '-x', reference_fasta_file, '-1', fastq1, '-2', fastq2, '-S', samfile, '-k', '99999', '-D', '20', '-R', '3', '-N', '0', '-L', '20', '-i', 'S,1,0.50']) # write to tmp
+        subprocess.call([bowtie_path, '--fr', '--minins', '300', '--maxins', '1100', '-x', reference_fasta_file, '-1', fastq1, '-2', fastq2, '-S', samfile, '-k', '99999', '-D', '20', '-R', '3', '-N', '0', '-L', '20', '-i', 'S,1,0.50', '-p', str(threads)]) # write to tmp
 
         # remove flags > 256 to allow reads to map in more than one locations
         sam_mod = modify_bowtie_sam(samfile, logger)
 
         # convert to bam
         log_writer.info_header(logger, "Running samtools to convert sam to bam file")
-        subprocess.call([samtools_path, 'view', '-bS', '-o', bamfile, sam_mod])
+        subprocess.call([samtools_path, 'view', '-bS', '-o', bamfile, '-@', str(threads), sam_mod])
 
         # sort bam file
         log_writer.info_header(logger, "Sort the bam file")
-        subprocess.call([samtools_path, 'sort', bamfile, sorted_bam_prefix])
+        subprocess.call([samtools_path, 'sort', '-o', sorted_bam_prefix + '.bam', '-@', str(threads), bamfile])
 
         # index bam file
         log_writer.info_header(logger, "Index the BAM file")

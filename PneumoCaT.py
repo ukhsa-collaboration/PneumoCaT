@@ -19,6 +19,7 @@
 '''
 
 import os, os.path, sys, subprocess, argparse, glob, yaml, inspect
+import distutils.spawn
 
 module_folder_paths = ["modules"]
 
@@ -33,25 +34,37 @@ import log_writer
 from utility_functions import *
 
 
+def msg():
+  return '''python PneumoCaT.py [-h] [--input_directory INPUT_DIRECTORY]
+                                [--fastq_1 FASTQ_1] [--fastq_2 FASTQ_2]
+                                [--variant_database VARIANT_DATABASE]
+                                [--output_dir OUTPUT_DIR] [--threads THREADS]
+                                [--bowtie BOWTIE] [--samtools SAMTOOLS] [--cleanup]
+          '''
+
 def parse_args(args):
   """
   We have set parser = argparse.ArgumentParser() and added all arguments by adding parser.add_argument.
   """
   global _parser
   
-  _parser = argparse.ArgumentParser()
+  _parser = argparse.ArgumentParser(description='PneumoCaT.py', usage=msg())
   _parser.add_argument('--input_directory', '-i', help='please provide the path to the directory contains the fastq files [REQUIRED - OPTION 1]')
   _parser.add_argument('--fastq_1', '-1', help='Fastq file pair 1 [REQUIRED - OPTION 2]')
   _parser.add_argument('--fastq_2', '-2', help='Fastq file pair 2 [REQUIRED - OPTION 2]')
   _parser.add_argument('--variant_database', '-d', help='variant database [OPTIONAL]; defaults to streptococcus-pneumoniae-ctvdb in the github directory', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'streptococcus-pneumoniae-ctvdb'))
   _parser.add_argument('--output_dir', '-o', help='please provide an output directory [OPTIONAL]; if none provided a pneumo_capsular_typing folder will be created in the directory containing the fastq files')
+  _parser.add_argument('--threads', '-t', default=4, help='number of threads used for bowtie2 [OPTIONAL]; default=4') 
   _parser.add_argument('--bowtie', '-b', help='please provide the path for bowtie2 [OPTIONAL]; defaults to bowtie2', default='bowtie2')
   _parser.add_argument('--samtools', '-s', help='please provide the path for samtools [OPTIONAL]; defaults to samtools', default='samtools')
   _parser.add_argument('--cleanup', '-c', help='if used, all bam files generated will be removed upon completion', action = 'store_true', default='False')
 
-
   opts = _parser.parse_args(args)
   
+  if not (opts.input_directory or (opts.fastq_1 and opts.fastq_2)):
+    _parser.print_help(sys.stderr)    
+    sys.exit(1)
+
   return opts
 
 
@@ -69,9 +82,8 @@ def main(opts):
   glob_pattern = "*fastq*"
   ids = None
 
-  # Use the utility_functions script to call check_file_exists function in common_modules which does exacly that!
-  # check_file_exists(opts.bowtie2_path, 'bowtie2 path')
-  # check_file_exists(opts.samtools_path, 'samtools path')
+  workflow = 'PneumoCaT'
+  version = '1.0'
 
   # If an output file has not been specified, thesn create output_dir in the input_directory
   if not opts.output_dir:
@@ -83,7 +95,25 @@ def main(opts):
       if not os.path.isdir(opts.output_dir): os.makedirs(opts.output_dir) #make output_directory
   else:
       if not os.path.exists(opts.output_dir):os.makedirs(opts.output_dir) 
-  
+
+  ## LOGGER
+  # create a log folder in the specified input directory
+  # This is set once to log all subprocesses.  The stdout and stderr log files will be in the output_dir.  The logger is called in Serotype_determiner_functions.
+  if not os.path.exists(opts.output_dir + "/logs"): os.makedirs(opts.output_dir + "/logs") 
+  logger = log_writer.setup_logger(info_file = opts.output_dir + "/logs/pneumo_capsular_typing.stdout", error_file = opts.output_dir + "/logs/pneumo_capsular_typing.stderr")
+
+
+  ## SOFTWARE
+  # Check that the executables are available
+  if distutils.spawn.find_executable(opts.bowtie) == None:
+    print('Please provide a path to Bowtie2 executable')
+    log_writer.error_header(logger, 'Bowtie2: command not found')
+    sys.exit(1)
+  elif distutils.spawn.find_executable(opts.samtools) == None:
+    print('Please provide a path to Samtools executable')
+    log_writer.error_header(logger, 'Samtools: command not found')
+    sys.exit(1)
+     
   # option 1: if user wants to provide the path for a dir that has the fastq files then they can specify an input direcotry path with -i option.
   if opts.input_directory:
     check_file_exists(opts.input_directory, 'input directory')
@@ -114,15 +144,9 @@ def main(opts):
   if opts.variant_database != 'streptococcus-pneumoniae-ctvdb':
     check_file_exists(reference_fasta_file, 'reference.fasta file')
     
-  workflow = 'PneumoCaT'
-  version = '1.0'
-  # create a log folder in the specified input directory
-  # This is set once to log all subprocesses.  The stdout and stderr log files will be in the output_dir.  The logger is called in Serotype_determiner_functions.
-  if not os.path.exists(opts.output_dir + "/logs"): os.makedirs(opts.output_dir + "/logs") 
-  logger = log_writer.setup_logger(info_file = opts.output_dir + "/logs/pneumo_capsular_typing.stdout", error_file = opts.output_dir + "/logs/pneumo_capsular_typing.stderr")
 
   #Step1: coverage based approach
-  hits = Serotype_determiner_functions.find_serotype(opts.input_directory, fastq_files, reference_fasta_file, opts.output_dir, opts.bowtie, opts.samtools, opts.cleanup, id, logger, workflow=workflow, version=version) ## addition for step2
+  hits = Serotype_determiner_functions.find_serotype(opts.input_directory, fastq_files, reference_fasta_file, opts.output_dir, opts.bowtie, opts.samtools, opts.cleanup, id, logger, workflow=workflow, version=version, threads=opts.threads) ## addition for step2
   
   ## Step2: variant based approach
   print hits
@@ -132,7 +156,7 @@ def main(opts):
   if hits != []:
     reference_directory = opts.variant_database
     logger = log_writer.setup_logger(info_file = opts.output_dir + "/logs/SNP_based_serotyping.stdout", error_file = opts.output_dir + "/logs/SNP_based_serotyping.stderr")
-    SNP_based_Serotyping_Functions.find_serotype(opts.input_directory, fastq_files, hits, reference_directory, opts.output_dir, opts.bowtie, opts.samtools, opts.cleanup, logger, workflow=workflow, version=version)
+    SNP_based_Serotyping_Functions.find_serotype(opts.input_directory, fastq_files, hits, reference_directory, opts.output_dir, opts.bowtie, opts.samtools, opts.cleanup, logger, workflow=workflow, version=version, threads=opts.threads)
   write_component_complete(opts.output_dir)
 
 if __name__ == "__main__":

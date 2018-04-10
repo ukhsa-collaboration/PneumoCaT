@@ -30,7 +30,7 @@ import yaml, operator
 
 
 
-def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, clean_bam, id, logger, workflow = "", version = ""):
+def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, clean_bam, id, logger, workflow = "", version = "", threads=4):
   
   """
   
@@ -51,7 +51,7 @@ def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bow
   :rtype: float
 
   """
-  bam = try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", mapping, input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, id, logger)
+  bam = try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", mapping, input_directory, fastqs, reference_fasta_file, output_dir, bowtie, samtools, id, logger, threads)
   output_file = open(output_dir + "/" + id + ".results.xml", "w")
   try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", best_coverage,bam,reference_fasta_file)
   hits = try_and_except(output_dir + "/logs/strep_pneumo_serotyping.stderr", output_all,bam,reference_fasta_file,output_file,id,workflow,version) # added for step 2
@@ -61,7 +61,7 @@ def find_serotype(input_directory, fastqs, reference_fasta_file, output_dir, bow
     for file in bamfiles: os.remove(file)
   return hits
 
-def mapping(input_directory, fastqs, reference_fasta_file_path, output_dir, bowtie, samtools, id, logger):
+def mapping(input_directory, fastqs, reference_fasta_file_path, output_dir, bowtie, samtools, id, logger, threads):
 
   """
 
@@ -111,7 +111,7 @@ def mapping(input_directory, fastqs, reference_fasta_file_path, output_dir, bowt
   
   # # run bowtie
   cmd = [bowtie]
-  cmd += [ '--fr', '--minins', '300', '--maxins', '1100', '-x', reference_fasta_file, '-1', fastqs[0], '-2', fastqs[1],'-S', sam, '-k', '99999', '-D', '20', '-R', '3', '-N', '0', '-L', '20', '-i', 'S,1,0.50'] # write to tmp 
+  cmd += [ '--fr', '--minins', '300', '--maxins', '1100', '-x', reference_fasta_file, '-1', fastqs[0], '-2', fastqs[1],'-S', sam, '-k', '99999', '-D', '20', '-R', '3', '-N', '0', '-L', '20', '-i', 'S,1,0.50', '-p', str(threads)] # write to tmp 
   log_writer.info_header(logger, "Running bowtie to generate sam file")
 #  print "running bowtie"
   process = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -123,12 +123,12 @@ def mapping(input_directory, fastqs, reference_fasta_file_path, output_dir, bowt
   try_and_except(input_directory + "/logs/strep_pneumo_serotyping.stderr", remove_secondary_mapping_bit, sam, sam_parsed)
 
   log_writer.info_header(logger, "Convert sam to bam")
-  process = subprocess.Popen([samtools, 'view', '-bhS', '-o', bam, sam_parsed], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+  process = subprocess.Popen([samtools, 'view', '-bhS', '-o', bam, '-@', str(threads), sam_parsed], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
   process.wait()
   log_writer.log_process(logger, process, log_error_to = "info")
   # sort bam
   log_writer.info_header(logger, "Sort the bam file")
-  process = subprocess.Popen([samtools, 'sort', bam, bam_sorted], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+  process = subprocess.Popen([samtools, 'sort', '-o', bam_sorted + ".bam", '-@', str(threads), bam], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
   process.wait()
   log_writer.log_process(logger, process, log_error_to = "info")
   # index bam
