@@ -83,7 +83,7 @@ def main(opts):
   ids = None
 
   workflow = 'PneumoCaT'
-  version = '1.0'
+  version = '1.2'
 
   # If an output file has not been specified, thesn create output_dir in the input_directory
   if not opts.output_dir:
