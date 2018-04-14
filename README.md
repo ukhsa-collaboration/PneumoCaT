@@ -35,7 +35,7 @@ make
 * pysam (https://github.com/pysam-developers/pysam)
 * biopython (https://github.com/biopython/biopython)
 
-**NOTE:** Previous dependency to Samtools version 0.1.19 was due to incompatibility of pysam with later version. This has now been resolved with version 1.7 so PneumoCaT has been changed to work with this version of Samtools and hopefully the ones after that (versions 1.7+). Version 0.1.19 is no longer compatible due to changes on the structure of the samtools command specifically, the latest versions require an output filename using tag -o instead of the prefix required by the earliest versions.
+**NOTE:** Previous dependency to Samtools version 0.1.19 was due to incompatibility of pysam with version 1.2. This was resolved with version 1.3 so PneumoCaT has been changed to work with this version of Samtools and hopefully the ones after that (versions 1.3+). Version 0.1.19 is no longer compatible due to changes on the structure of the samtools command specifically, the latest versions require an output filename using tag -o instead of the prefix required by the earliest versions.
   
   version 0.1.19
   ```
