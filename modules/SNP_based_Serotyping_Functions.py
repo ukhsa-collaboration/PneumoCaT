@@ -188,10 +188,7 @@ def output_xml(match, output_dir, ngs_sample_id, unique, logger, workflow="", ve
             if len(_serotypes) > 1 and [f for f in mutations if f[3].startswith('Mixed:')]:
                 top_hit = top_hit+'+' if len([f for f in scores if f[1] == top_score]) == 1 else 'Mixed: '+ str([f[0] for f in scores if f[1] == top_score])
             else:
-                if len(_serotypes) == 1 and top_hit == _serotypes[0]:
-                    top_hit = _serotypes[0]+'+'
-                else:
-                    top_hit = 'Serotype undetermined'
+                top_hit = 'Serotype undetermined'
     elif len([f[1] for f in scores if f[1] == 1])> 1: # reports mixed sample if more than one serotypes scored == 1
         mixed_serotypes = [f[0] for f in scores if f[1] == 1]
         top_hit = 'Mixed: ' + str([f[0] for f in scores if f[1] == 1])
