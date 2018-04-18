@@ -54,7 +54,7 @@ def parse_args(args):
   _parser.add_argument('--fastq_2', '-2', help='Fastq file pair 2 [REQUIRED - OPTION 2]')
   _parser.add_argument('--variant_database', '-d', help='variant database [OPTIONAL]; defaults to streptococcus-pneumoniae-ctvdb in the github directory', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'streptococcus-pneumoniae-ctvdb'))
   _parser.add_argument('--output_dir', '-o', help='please provide an output directory [OPTIONAL]; if none provided a pneumo_capsular_typing folder will be created in the directory containing the fastq files')
-  _parser.add_argument('--threads', '-t', default=4, help='number of threads used for bowtie2 [OPTIONAL]; default=4') 
+  _parser.add_argument('--threads', '-t', default=4, help='number of threads to use [OPTIONAL]; default=4') 
   _parser.add_argument('--bowtie', '-b', help='please provide the path for bowtie2 [OPTIONAL]; defaults to bowtie2', default='bowtie2')
   _parser.add_argument('--samtools', '-s', help='please provide the path for samtools [OPTIONAL]; defaults to samtools', default='samtools')
   _parser.add_argument('--cleanup', '-c', help='if used, all bam files generated will be removed upon completion', action = 'store_true', default='False')
