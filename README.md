@@ -74,7 +74,7 @@ optional arguments:
                         provided a pneumo_capsular_typing folder will be
                         created in the directory containing the fastq files
   --threads THREADS, -t THREADS
-                        number of threads used for bowtie2 [OPTIONAL];
+                        number of threads to use [OPTIONAL];
                         default=4
   --bowtie BOWTIE, -b BOWTIE
                         please provide the path for bowtie2 [OPTIONAL];
