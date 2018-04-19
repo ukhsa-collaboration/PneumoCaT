@@ -3,6 +3,8 @@
 
 PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approach to assign capsular type to *S.pneumoniae* genomic data (Illumina). In the first step, reads from each readset are mapped to capsular locus sequences for all known capsular types (92 for S. pneumoniae plus 2 additional subtypes/molecular types). This step is considered successful if the readset matches > 90% to 1 or more capsular locus sequences. If it matches to a single capsular locus then PneumoCaT terminates here and reports this as the assigned capsular type. If more than 1 loci are matched then the tool moves to the second step; a variant based approach that utilises the capsular type variant (CTV) database to distinguish serotypes within a serogroup/genogroup. For more information you can refer to the publication.
 
+**It is very important that the results files produced by PneumoCaT are correctly interpreted**. We have become aware of some groups getting poorer than expected concordence in their own validations due to mis-interpretation of the results files. Please read the output files section carefully to ensure the correct xml file is used as the final result. There are two examples contained in the Examples folder which show the two different result outputs. Please use these to validate that your installation of PneumoCaT is working and also to get familiar with the two different result outputs produced by a serotype which is called only in part 1 (mapping) and a serotype which is called by part 2 (variant based approach). 
+
 **NOTE:** For people who are using the published dataset (ENA Project PRJEB14267) to validate the pipeline please download the fastq files under the Submitted Files (FTP) column. Apparently some post-submission processing occuring during ENA submission alters the files causing problems in subsequent analysis. 
 
 ## Table of content
@@ -96,14 +98,19 @@ Input files are required to have this pattern present \*1.fastq\* or \*2.fastq\*
 ---------------
 
 ### STEP 1: COVERAGE-BASED APPROACH
-1. **SAMPLEID.results.xml** - The XML file at step 1 is basic and it only contains the top two capsular types and their respective read coverage (% of the capsular locus length covered). If only one capsular type is matched with more than 90% coverage then the report from step 1 is considered the final result (**result type="Serotype"**). If more than one capsular type are matched with more than 90% coverage then the software moves to step two and a second XML file is generated with the final result. Note that the output XML file from step 1 only reports two capsular types, when more could be matched and all will pass to step 2 for further distinction. If the top coverage is < 90% then no serotypes are reported and 'Failed' appears instead.
+1. **SAMPLEID.results.xml** - The XML file at step 1 is basic and it only contains the top two capsular types and their respective read coverage (% of the capsular locus length covered). **PLEASE NOTE** this file ONLY contains the final result if no "SNP_based_serotyping" folder appears in the result output location. 
+
+If only one capsular type is matched with more than 90% coverage then the report from step 1 contained in this xml file is considered the final result (**result type="Serotype"**) and no further folders will appear within the PneumoCaT output folder. If more than one capsular type are matched with more than 90% coverage then the software moves to step two and a SNP_based_serotyping folder is created containing a second XML file with the final result - see STEP 2- VARIANT-BASED APPROACH.
+
+Note that the output XML file from step 1 only reports two capsular types, when more could be matched and all will pass to step 2 for further distinction. If the top coverage is < 90% then no serotypes are reported and 'Failed' appears instead.
+
 2. **SAMPLEID.sorted.bam** - BAM file generated during step 1 using the 94 capsular locus sequences as reference.
 3. **SAMPLEID.sorted.bam.bai** - index file for the sorted BAM file
-4. **ComponentComplete.txt** - indicates PneumoCaT analysis was completed succssfully
+4. **ComponentComplete.txt** - indicates PneumoCaT analysis was completed succssfully - useful if using PneumoCaT in a pipeline.
 5. **coverage_summary.txt** - contains the coverage values for all serotypes. This is useful if the step has failed, epsecially if the top coverage falls close to the 90% threshold.
 
 ### STEP 2 - VARIANT-BASED APPROACH
-1. **SAMPLEID.results.xml** - The XML file at step 2 details the assigned capsular type (**result type ="Serotype Distinction"**), total hits, the capsular types studied in this analysis as well as a full breakdown of the mutations used for this assignment. Total hits corresponds to the number of matched mutations vs the number of all mutations tested. A capsular type is assigned only if all mutations matched. If a complete match is not possible then 'Serotype Undetermined' is reported.
+1. **SAMPLEID.results.xml** - The XML file at step 2 details the final assigned capsular type (**result type ="Serotype Distinction"**), total hits, the capsular types studied in this analysis as well as a full breakdown of the variant positions used for this assignment. Total hits corresponds to the number of matched variants vs the number of all variants tested. A capsular type is assigned only if all variants matched. If a complete match is not possible then 'Serotype Undetermined' is reported.
   Coverage statistic metrics are calculated for each gene locus used for this assignment. These include five values as detailed below:
   * Minimum depth: the minimum number of reads that maps to the gene sequence at any single position.
   * Maximum depth: the maximum number of reads that maps to the gene sequence at any single position.
