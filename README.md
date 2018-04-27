@@ -7,6 +7,8 @@ PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approa
 
 **NOTE:** For people who are using the published dataset (ENA Project PRJEB14267) to validate the pipeline please download the fastq files under the Submitted Files (FTP) column. Apparently some post-submission processing occuring during ENA submission alters the files causing problems in subsequent analysis. 
 
+Due to the update to new version of Samtools in this version compared to previous version please re-validate outputs as necessary for your quality systems.
+
 ## Table of content
 ---------------------------
 
@@ -24,7 +26,7 @@ PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approa
 
 PneumoCaT  is written with Python 2.7.5 and requires the following packages installed before running:
 * Bowtie2 (https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/)
-* Samtools version 1.7+ (https://sourceforge.net/projects/samtools/files/samtools/1.7/)  (see NOTE below). To install after downloading:
+* Samtools version 1.7 (https://sourceforge.net/projects/samtools/files/samtools/1.7/)  (see NOTE below). To install after downloading:
 
 ```
 cd <path-to>/samtools-1.7
@@ -43,7 +45,7 @@ make
   ```
   samtools sort [options] <in.bam> <out.prefix>
   ```
-  version 1.7
+  version 1.3+
   ```
   samtools sort [options...] -o FILENAME <in.bam>
   ```
