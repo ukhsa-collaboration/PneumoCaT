@@ -7,7 +7,7 @@ PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approa
 
 **NOTE 1:** For people who are using the published dataset (ENA Project PRJEB14267) to validate the pipeline please download the fastq files under the Submitted Files (FTP) column. Apparently some post-submission processing occuring during ENA submission alters the files causing problems in subsequent analysis. 
 
-**NOTE2:** For step 2 of the pipeline (but not step 1) there is a requirement for the fastQ files to have a certain name format. The last character of the filename should be the read number (eg ...R1.fastq.gz or ....R2.fastq.gz.). We will update the method used in the second step to remove this requirement in a future update. If your run is failing after the step 1 mapping while running bowtie in step 2 please check your input filenames.
+**NOTE2:** For step 2 of the pipeline (but not step 1) there is a requirement for the fastQ files to have a certain name format. The last character of the filename should be the read number (eg ...1.fastq.gz or ....2.fastq.gz.). We will update the method used in the second step to remove this requirement in a future update. If your run is failing after the step 1 mapping while running bowtie in step 2 please check your input filenames.
 
 Due to the update to new version of Samtools in this version compared to previous version please re-validate outputs as necessary for your quality systems.
 
