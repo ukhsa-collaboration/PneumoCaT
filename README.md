@@ -5,7 +5,9 @@ PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approa
 
 **It is very important that the results files produced by PneumoCaT are correctly interpreted**. We have become aware of some groups getting poorer than expected concordence in their own validations due to mis-interpretation of the results files. Please read the new result interpretation document (contained in the "Documentation" folder) and also the output files section below carefully to ensure the correct xml file is used as the final result. There are two examples contained in the Examples folder which show the two different result outputs. Please use these to validate that your installation of PneumoCaT is working and also to get familiar with the two different result outputs produced by a serotype which is called only in part 1 (mapping) and a serotype which is called by part 2 (variant based approach). 
 
-**NOTE:** For people who are using the published dataset (ENA Project PRJEB14267) to validate the pipeline please download the fastq files under the Submitted Files (FTP) column. Apparently some post-submission processing occuring during ENA submission alters the files causing problems in subsequent analysis. 
+**NOTE 1:** For people who are using the published dataset (ENA Project PRJEB14267) to validate the pipeline please download the fastq files under the Submitted Files (FTP) column. Apparently some post-submission processing occuring during ENA submission alters the files causing problems in subsequent analysis. 
+
+**NOTE2:** For step 2 of the pipeline (but not step 1) there is a requirement for the fastQ files to have a certain name format. The last character of the filename should be the read number (eg ...R1.fastq.gz or ....R2.fastq.gz.). We will update the method used in the second step to remove this requirement in a future update. If your run is failing after the step 1 mapping while running bowtie in step 2 please check your input filenames.
 
 Due to the update to new version of Samtools in this version compared to previous version please re-validate outputs as necessary for your quality systems.
 
