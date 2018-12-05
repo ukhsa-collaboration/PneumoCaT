@@ -1,7 +1,9 @@
 # README for PneumoCaT tool
 ---------------------------
 
-PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approach to assign capsular type to *S.pneumoniae* genomic data (Illumina). In the first step, reads from each readset are mapped to capsular locus sequences for all known capsular types (92 for S. pneumoniae plus 2 additional subtypes/molecular types). This step is considered successful if the readset matches > 90% to 1 or more capsular locus sequences. If it matches to a single capsular locus then PneumoCaT terminates here and reports this as the assigned capsular type. If more than 1 loci are matched then the tool moves to the second step; a variant based approach that utilises the capsular type variant (CTV) database to distinguish serotypes within a serogroup/genogroup. For more information you can refer to the publication. To keep up to date please watch this repository or follow @PneumoCaT on twitter. 
+PneumoCaT (**Pneumo**coccal **Ca**psular **T**yping) uses a two-step step approach to assign capsular type to *S.pneumoniae* genomic data (Illumina). In the first step, reads from each readset are mapped to capsular locus sequences for all known capsular types (92 for S. pneumoniae plus 2 additional subtypes/molecular types). This step is considered successful if the readset matches > 90% to 1 or more capsular locus sequences. If it matches to a single capsular locus then PneumoCaT terminates here and reports this as the assigned capsular type. If more than 1 loci are matched then the tool moves to the second step; a variant based approach that utilises the capsular type variant (CTV) database to distinguish serotypes within a serogroup/genogroup. For more information you can refer to the publication. Please note PneumoCaT applies a minimum depth quality metric requiring a mean depth of 20 reads across the mapped sequence and minimum depth of 5 reads at any base position and will report "Failed" if these conditions are not met.
+
+To keep up to date please watch this repository or follow @PneumoCaT on twitter. 
 
 **It is very important that the results files produced by PneumoCaT are correctly interpreted**. We have become aware of some groups getting poorer than expected concordence in their own validations due to mis-interpretation of the results files. Please read the new result interpretation document (contained in the "Documentation" folder) and also the output files section below carefully to ensure the correct xml file is used as the final result. There are two examples contained in the Examples folder which show the two different result outputs. Please use these to validate that your installation of PneumoCaT is working and also to get familiar with the two different result outputs produced by a serotype which is called only in part 1 (mapping) and a serotype which is called by part 2 (variant based approach). 
 
@@ -96,7 +98,8 @@ optional arguments:
 ## Input files
 --------------
 
-Input files are required to have this pattern present \*1.fastq\* or \*2.fastq\*. The tool doesn't currently recognizes \*fq\*. SAMPLEID is extracted from the 1.fastq file by splitting the fastq file name on '.' and selecting the first part, i.e. SAMPLEID from SAMPLEID.1.fastq.gz or SAMPLEID_1 from SAMPLEID_1.fastq.gz.
+Input files are required to have this pattern present \*1.fastq\* or \*2.fastq\*. The tool doesn't currently recognise \*fq\*. 
+SAMPLEID is extracted from the 1.fastq file by splitting the fastq file name on '.' and selecting the first part, i.e. SAMPLEID from SAMPLEID.1.fastq.gz or SAMPLEID_1 from SAMPLEID_1.fastq.gz.
 
 ## Output files
 ---------------
@@ -106,7 +109,7 @@ Input files are required to have this pattern present \*1.fastq\* or \*2.fastq\*
 
 If only one capsular type is matched with more than 90% coverage then the report from step 1 contained in this xml file is considered the final result (**result type="Serotype"**) and no further folders will appear within the PneumoCaT output folder. If more than one capsular type are matched with more than 90% coverage then the software moves to step two and a SNP_based_serotyping folder is created containing a second XML file with the final result - see STEP 2- VARIANT-BASED APPROACH.
 
-Note that the output XML file from step 1 only reports two capsular types, when more could be matched and all will pass to step 2 for further distinction. If the top coverage is < 90% then no serotypes are reported and 'Failed' appears instead.
+Note that the output XML file from step 1 only reports two capsular types, when actually more could be matched and all will pass to step 2 for further distinction. Further information on mapped serotypes in stage 1 can be found in "Coverage_summary.txt". If the top hit coverage is < 90% then no serotypes are reported and 'Failed' appears instead.
 
 2. **SAMPLEID.sorted.bam** - BAM file generated during step 1 using the 94 capsular locus sequences as reference.
 3. **SAMPLEID.sorted.bam.bai** - index file for the sorted BAM file
@@ -223,7 +226,8 @@ Five different formats of failure values are returned when no serotype can be pr
   * “Low coverage”: Less than 90% coverage of the gene sequence.
   * "SNP position 1002: Depth < 5”: Nucleotide position covered by less than 5 reads.
   * “SNP position 1002 not covered”: No reads map at this nucleotide position.
-* "Failed": This output is associated with step 1 and coverage <90% for the capsular locus sequence with the highest coverage. This tag denote an absence of a fully functional capsular locus and can be interpreted in two different ways based on the coverage values:
+* "Failed": This output is associated with step 1 and coverage <90% for the capsular locus sequence with the highest coverage OR when the minimum read depth is <5 or average read depth is <20. This tag either denote an absence of a fully functional capsular locus ( can be interpreted in two different ways based on the coverage values as below) OR that the quality of sequencing data has not passed the threshold values for analysis. 
+If the depth metrics are above the thresholds and the result = Failed:
   * If coverage < 60%: this corresponds to a non-typable isolate. This was tested in the lab with clinical isolates using a traditional serotyping method (slide agglutination with SSI serum). This will be tested further and an appropriate result should be added in the future.
   * If coverage > 60%: this corresponds to a partial capsule and in all cases seen so far the isolate still expresses a capsule.
 
@@ -234,8 +238,9 @@ Five different formats of failure values are returned when no serotype can be pr
 
 
 ### Threshold values
+PneumoCaT applies a minimum read depth of 5 and minimum average read depth of 20 for mapping. Samples that do not meet these criteria are scored as "Failed" even when the coverage is more than 90%. These threshold values could be modified in the serotype_determiner_functions script if lower stringency is required.
 
-Mutations can be confidently reported if the percentage coverage for the gene is more than 90% and a single fragment is reported in the coverage distribution. As well as this general threshold individual mutations have specific thresholds.
+Variants can confidently reported if the percentage coverage for the gene is more than 90% and a single fragment is reported in the coverage distribution. As well as this general threshold individual mutations have specific thresholds.
 * Alleles: An allele is reported if it has coverage more than 90% and the other alleles have coverage < 10%, otherwise a mixed tag is reported.
 * SNPs: When a specific nt position is investigated the hit will only be reported if 
   * depth in the codon area is more than 5
