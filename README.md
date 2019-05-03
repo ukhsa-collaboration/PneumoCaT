@@ -68,7 +68,7 @@ usage: python PneumoCaT.py [-h] [--input_directory INPUT_DIRECTORY]
 optional arguments:
   -h, --help            show this help message and exit
   --input_directory INPUT_DIRECTORY, -i INPUT_DIRECTORY
-                        please provide the path to the directory contains the
+                        please provide the path to the directory that contains the
                         fastq files [REQUIRED - OPTION 1]
   --fastq_1 FASTQ_1, -1 FASTQ_1
                         Fastq file pair 1 [REQUIRED - OPTION 2]
