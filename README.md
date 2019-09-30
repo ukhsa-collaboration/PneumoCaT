@@ -13,12 +13,12 @@ PRJEB14267) to validate the pipeline please download the fastq files under the S
 **NOTE 2:** For step 2 of the pipeline (but not step 1) there is a 
 requirement for the fastQ files to have a certain name format. The last character of the filename should be the read number (eg ...1.fastq.gz or ....2.fastq.gz.). We will update the method used in the second step to remove this requirement in a future update. If your run is failing after the step 1 mapping while running bowtie in step 2 please check your input filenames.
 
-**NOTE 3:** V1.21 gives an extra determination for serotype 19A and 19A-like 
+**NOTE 3:** V1.2.1 gives an extra determination for serotype 19A and 19A-like 
 19F pneumococci. Isolates have been found with a capsular operon sequence 
 resembling 19A but that serotype as 19F. In these cases the wzy gene is 19F-
- like. This determination has been added to the CTVdb in version 1.21. 
+ like. This determination has been added to the CTVdb in version 1.2.1. 
  Please note it is up to users to validate and decide how to interpret these
- . Isolates that are resulted as "19AF" by PneumoCaT V1.21 should phenotype 
+ . Isolates that are resulted as "19AF" by PneumoCaT V1.2.1 should phenotype 
  as 19F but genetically resemble 19A. 
  
 Due to the update to new version of Samtools in this version compared to previous version please re-validate outputs as necessary for your quality systems.
