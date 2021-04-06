@@ -33,6 +33,7 @@ Due to the update to new version of Samtools in this version compared to previou
 * Examples
 * Troubleshooting
 * Contact Information
+* Citing PneumoCaT
 * Licence Agreement
 
 ## Dependencies
@@ -258,6 +259,18 @@ Variants can confidently reported if the percentage coverage for the gene is mor
   * mapping quality is more than 30
   * no other snps are reported within ±5 nts area 
 * Pseudogenes: The overall coverage threshold has been reduced to 70% to allow for reporting large indels/truncations as a causal agent for loss of function. A functional orf is reported if coverage is more than 80% and a single orf is present that match the functional orf for the gene tested. This lower threshold (80% instead of 90%) has been empirically adjusted to allow for poor mapping in the beginning and end of the gene locus. If specific frameshift mutations are investigated then the same threshold as described above are used (SNPs).
+
+
+## Citing PneumoCaT
+--------------------
+Please cite [the original paper](https://peerj.com/articles/2477/):
+
+Whole genome sequencing of Streptococcus pneumoniae: development, evaluation and verification of targets for serogroup and serotype prediction using an automated pipeline
+
+Georgia Kapatai, Carmen L. Sheppard, Ali Al-Shahib, David J. Litt, Anthony P. Underwood, Timothy G. Harrison, Norman K. Fry
+
+PeerJ: 2016 Sep 14;4:e2477. doi: 10.7717/peerj.2477. eCollection 2016.
+
 
 ## Licence Agreement
 --------------------
